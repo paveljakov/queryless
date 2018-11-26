@@ -1,16 +1,13 @@
 package queryless.plugin;
 
-import static javax.lang.model.element.Modifier.*;
-
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import javax.lang.model.element.Modifier;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.AbstractMojo;
@@ -21,27 +18,35 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 
-import com.squareup.javawriter.JavaWriter;
+import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.TypeSpec;
 
-import queryless.org.springframework.util.ResourceUtils;
-
-@Mojo(name = "generate-constants",
+@Mojo(name = "generate",
       defaultPhase = LifecyclePhase.GENERATE_SOURCES,
       requiresDependencyResolution = ResolutionScope.COMPILE,
       requiresDependencyCollection = ResolutionScope.COMPILE,
       threadSafe = true)
 public class GenerateConstants extends AbstractMojo {
 
-    @Parameter(property = "queryless.sources", required = true)
-    private String sources[];
+    @Parameter(property = "queryless.sources",
+               required = true)
+    private String[] sources;
 
-    @Parameter(property = "queryless.package", defaultValue = "queryless.generated")
+    @Parameter(property = "queryless.package",
+               defaultValue = "queryless.generated")
     private String packageName;
 
     @Parameter(defaultValue = "${project.build.directory}/generated-sources/queryless",
-               property = "queryless.generateDirectory",
+               property = "queryless.generatePath",
                required = true)
-    private File generateDirectory;
+    private File generatePath;
+
+    @Parameter(property = "queryless.resourcesPath",
+               defaultValue = "src/main/resources")
+    private String resourcesPath;
+
+    @Parameter(defaultValue = "${project.basedir}")
+    private File basedir;
 
     @Parameter(defaultValue = "${project}",
                readonly = true)
@@ -49,62 +54,62 @@ public class GenerateConstants extends AbstractMojo {
 
     public void execute() throws MojoExecutionException {
         try {
-            generateDirectory.mkdirs();
+            Files.createDirectories(generatePath.toPath());
 
-            List<File> sourceLocations = Arrays.stream(sources).filter(ResourceUtils::isUrl).map(location -> {
-                try {
-                    return ResourceUtils.getFile(location);
-                } catch (FileNotFoundException e) {
-                    throw new RuntimeException(e);
-                }
-            }).collect(Collectors.toList());
+            for (final String source : sources) {
+                Path sourcePath = Paths.get(basedir.toString(), resourcesPath, source);
+                getLog().info("SourcePath: " + sourcePath);
 
-            List<File> files = sourceLocations.stream().flatMap(location -> FileUtils.listFiles(location, new String[] {".xml"}, true).stream())
-                    .collect(Collectors.toList());
+                //ClassLoader cl = Thread.currentThread().getContextClassLoader();
+                //URL url = (cl != null ? cl.getResource(path) : ClassLoader.getSystemResource(path));
 
-            files.forEach(file -> getLog().info(file.toString()));
+                FileUtils.listFiles(sourcePath.toFile(), new String[] {"xml"}, true).forEach(file -> getLog().info(file.toString()));
+            }
 
-            File test = new File(generateDirectory.toString() + "/Person.java");
-            test.createNewFile();
+            Path test = Paths.get(generatePath.toString(), "Test.java");
+            Files.createFile(test);
 
-            StringWriter stringWriter = new StringWriter();
-            JavaWriter writer = buildWriter(stringWriter);
+            MethodSpec flux = MethodSpec.constructorBuilder()
+                    .addModifiers(Modifier.PUBLIC)
+                    .addParameter(String.class, "greeting")
+                    .addStatement("this.$N = $N", "greeting", "greeting")
+                    .build();
 
-            writer.emitPackage(packageName)
-                    //.emitImports()
-                    .emitJavadoc("test")
-                    .beginType("Person", "class", EnumSet.of(PUBLIC, FINAL))
-                    .emitEmptyLine()
-                    .emitJavadoc("Query:<br /><br /><code><pre>SELECT<br />*<br />FROM</pre></code>")
-                    .emitField("String", "QUERY_1", EnumSet.of(PUBLIC, STATIC, FINAL))
-                    .emitEmptyLine()
-                    .emitJavadoc("test")
-                    .emitField("String", "lastName", EnumSet.of(PUBLIC, STATIC, FINAL))
-                    .emitEmptyLine()
-                    .beginConstructor(EnumSet.of(PRIVATE))
-                    .endConstructor()
-                    .emitEmptyLine()
-                    .emitJavadoc("Returns the person's full name.")
-                    .beginMethod("String", "getName", EnumSet.of(PUBLIC))
-                    .emitStatement("return firstName + \" \" + lastName")
-                    .endMethod()
-                    .emitEmptyLine()
-                    .endType();
+            TypeSpec helloWorld = TypeSpec.classBuilder("Test")
+                    .addModifiers(Modifier.PUBLIC)
+                    .addField(String.class, "greeting", Modifier.PRIVATE, Modifier.FINAL)
+                    .addMethod(flux)
+                    .build();
 
-            FileUtils.writeStringToFile(test, stringWriter.toString(), StandardCharsets.UTF_8);
+            //            writer.emitPackage(packageName)
+            //                    //.emitImports()
+            //                    .emitJavadoc("test")
+            //                    .beginType("Person", "class", EnumSet.of(PUBLIC, FINAL))
+            //                    .emitEmptyLine()
+            //                    .emitJavadoc("Query:<br /><br /><code><pre>SELECT<br />*<br />FROM</pre></code>")
+            //                    .emitField("String", "QUERY_1", EnumSet.of(PUBLIC, STATIC, FINAL))
+            //                    .emitEmptyLine()
+            //                    .emitJavadoc("test")
+            //                    .emitField("String", "lastName", EnumSet.of(PUBLIC, STATIC, FINAL))
+            //                    .emitEmptyLine()
+            //                    .beginConstructor(EnumSet.of(PRIVATE))
+            //                    .endConstructor()
+            //                    .emitEmptyLine()
+            //                    .emitJavadoc("Returns the person's full name.")
+            //                    .beginMethod("String", "getName", EnumSet.of(PUBLIC))
+            //                    .emitStatement("return firstName + \" \" + lastName")
+            //                    .endMethod()
+            //                    .emitEmptyLine()
+            //                    .endType();
+
+            FileUtils.writeStringToFile(test.toFile(), helloWorld.toString(), StandardCharsets.UTF_8);
 
         } catch (IOException e) {
             getLog().error(e);
         }
 
-        project.addCompileSourceRoot(generateDirectory.getPath());
-        project.addTestCompileSourceRoot(generateDirectory.getPath());
-    }
-
-    private JavaWriter buildWriter(StringWriter stringWriter) {
-        JavaWriter javaWriter = new JavaWriter(stringWriter);
-        javaWriter.setIndent("    ");
-        return javaWriter;
+        project.addCompileSourceRoot(generatePath.getPath());
+        project.addTestCompileSourceRoot(generatePath.getPath());
     }
 
 }

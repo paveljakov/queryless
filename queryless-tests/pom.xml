@@ -31,12 +31,12 @@
                 <executions>
                     <execution>
                         <goals>
-                            <goal>generate-constants</goal>
+                            <goal>generate</goal>
                         </goals>
                         <phase>generate-sources</phase>
                         <configuration>
                             <sources>
-                                <param>classpath:queries</param>
+                                <param>queries</param>
                             </sources>
                         </configuration>
                     </execution>
