@@ -12,6 +12,7 @@ import javax.lang.model.element.Modifier;
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -21,12 +22,14 @@ import org.apache.maven.project.MavenProject;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 
+import queryless.plugin.source.SourcesLoader;
+
 @Mojo(name = "generate",
       defaultPhase = LifecyclePhase.GENERATE_SOURCES,
       requiresDependencyResolution = ResolutionScope.COMPILE,
       requiresDependencyCollection = ResolutionScope.COMPILE,
       threadSafe = true)
-public class GenerateConstants extends AbstractMojo {
+public class QuerylessPlugin extends AbstractMojo {
 
     @Parameter(property = "queryless.sources",
                required = true)
@@ -46,25 +49,19 @@ public class GenerateConstants extends AbstractMojo {
     private String resourcesPath;
 
     @Parameter(defaultValue = "${project.basedir}")
-    private File basedir;
+    private File root;
 
-    @Parameter(defaultValue = "${project}",
-               readonly = true)
+    @Component
     private MavenProject project;
+
+    @Component(role = SourcesLoader.class)
+    private SourcesLoader sourcesLoader;
 
     public void execute() throws MojoExecutionException {
         try {
             Files.createDirectories(generatePath.toPath());
 
-            for (final String source : sources) {
-                Path sourcePath = Paths.get(basedir.toString(), resourcesPath, source);
-                getLog().info("SourcePath: " + sourcePath);
-
-                //ClassLoader cl = Thread.currentThread().getContextClassLoader();
-                //URL url = (cl != null ? cl.getResource(path) : ClassLoader.getSystemResource(path));
-
-                FileUtils.listFiles(sourcePath.toFile(), new String[] {"xml"}, true).forEach(file -> getLog().info(file.toString()));
-            }
+            sourcesLoader.resolveSources(sources, root.toPath(), resourcesPath).forEach(p -> getLog().info("Source: " + p));
 
             Path test = Paths.get(generatePath.toString(), "Test.java");
             Files.createFile(test);

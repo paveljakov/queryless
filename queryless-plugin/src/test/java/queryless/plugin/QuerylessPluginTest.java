@@ -2,7 +2,7 @@ package queryless.plugin;
 
 import org.junit.Test;
 
-public class GenerateConstantsTest {
+public class QuerylessPluginTest {
 
     @Test
     public void testDirectoryScan() {
