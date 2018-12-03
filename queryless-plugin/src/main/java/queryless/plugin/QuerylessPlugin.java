@@ -47,9 +47,7 @@ public class QuerylessPlugin extends AbstractMojo {
 
     public void execute() throws MojoExecutionException {
         try {
-            executor.init(this);
-
-            executor.execute();
+            executor.execute(this);
 
         } catch (IOException e) {
             getLog().error(e);

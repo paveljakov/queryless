@@ -1,17 +1,27 @@
 package queryless.plugin.source.model;
 
 import java.nio.file.Path;
+import java.util.Objects;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import org.apache.commons.io.FilenameUtils;
 
-@Getter
-@AllArgsConstructor
-public class Source {
+import lombok.Data;
 
-    private Path path;
-    private SourceType type;
+@Data
+public class Source implements Comparable<Source> {
 
-    private String content;
+    private final Path path;
+    private final SourceType type;
+
+    private final String content;
+
+    public String getName() {
+        return FilenameUtils.removeExtension(path.getFileName().toString());
+    }
+
+    @Override
+    public int compareTo(final Source o) {
+        return Objects.compare(getPath(), o.getPath(), Path::compareTo);
+    }
 
 }

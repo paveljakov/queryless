@@ -5,6 +5,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 import javax.lang.model.element.Modifier;
 
@@ -21,7 +22,9 @@ import com.squareup.javapoet.TypeSpec;
 
 import queryless.plugin.QuerylessPlugin;
 import queryless.plugin.config.PluginConfiguration;
+import queryless.plugin.generator.ConstantsGenerator;
 import queryless.plugin.source.loader.SourcesLoader;
+import queryless.plugin.source.model.Source;
 
 @Component(role = PluginExecutor.class)
 public class PluginExecutor {
@@ -38,23 +41,24 @@ public class PluginExecutor {
     @Requirement
     private SourcesLoader sourcesLoader;
 
+    @Requirement
+    private ConstantsGenerator constantsGenerator;
+
     private PluginConfiguration pluginConfiguration;
 
-    public void init(QuerylessPlugin plugin) {
-
-        pluginConfiguration = new PluginConfiguration(plugin.getSources(), plugin.getPackageName(), plugin.getGeneratePath(),
-                                                      plugin.getResourcesPath(), plugin.getRoot());
-
-        container.addComponent(pluginConfiguration, PluginConfiguration.class, Hints.DEFAULT_HINT);
+    public void execute(QuerylessPlugin plugin) throws IOException {
+        init(plugin);
+        executeInternal();
+        finish();
     }
 
-    public void execute() throws IOException {
-        Files.createDirectories(pluginConfiguration.getGeneratePath().toPath());
+    private void executeInternal() throws IOException {
+        logger.info("Generating query constants.");
 
-        sourcesLoader.load(pluginConfiguration.getSources(), pluginConfiguration.getRoot().toPath(), pluginConfiguration.getResourcesPath())
-                .forEach(p -> logger.info("Source: " + p));
+        List<Source> sources = sourcesLoader
+                .load(pluginConfiguration.getSources(), pluginConfiguration.getRoot().toPath(), pluginConfiguration.getResourcesPath());
 
-        //getLog().info("Splitters size: " +sourceSplitterFactory.getSplitters().size());
+        sources.forEach(constantsGenerator::generate);
 
         Path test = Paths.get(pluginConfiguration.getGeneratePath().toString(), "Test.java");
         Files.createFile(test);
@@ -93,7 +97,22 @@ public class PluginExecutor {
         //                    .endType();
 
         FileUtils.writeStringToFile(test.toFile(), helloWorld.toString(), StandardCharsets.UTF_8);
+    }
 
+    private void init(QuerylessPlugin plugin) throws IOException {
+        pluginConfiguration = new PluginConfiguration(
+                plugin.getSources(),
+                plugin.getPackageName(),
+                plugin.getGeneratePath(),
+                plugin.getResourcesPath(),
+                plugin.getRoot());
+
+        container.addComponent(pluginConfiguration, PluginConfiguration.class, Hints.DEFAULT_HINT);
+
+        Files.createDirectories(pluginConfiguration.getGeneratePath().toPath());
+    }
+
+    private void finish() {
         project.addCompileSourceRoot(pluginConfiguration.getGeneratePath().getPath());
         project.addTestCompileSourceRoot(pluginConfiguration.getGeneratePath().getPath());
     }
