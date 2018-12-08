@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.codehaus.plexus.component.annotations.Component;
 
-import queryless.plugin.query.model.Query;
+import queryless.plugin.bundle.model.Query;
 import queryless.plugin.source.model.Source;
 import queryless.plugin.source.model.SourceType;
 
