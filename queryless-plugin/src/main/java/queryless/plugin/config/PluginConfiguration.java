@@ -1,30 +1,30 @@
 package queryless.plugin.config;
 
-import java.io.File;
+import java.nio.file.Path;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 public class PluginConfiguration {
 
-    private final String[] sources;
     private final String packageName;
-    private final File generatePath;
+    private final Path generatePath;
     private final String resourcesPath;
-    private final File root;
+    private final Path rootPath;
 
     @Override
     public String toString() {
         return new ToStringBuilder(this)
-                .append("sources", sources)
                 .append("packageName", packageName)
                 .append("generatePath", generatePath)
                 .append("resourcesPath", resourcesPath)
-                .append("root", root)
+                .append("rootPath", rootPath)
                 .toString();
     }
+
 }

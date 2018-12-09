@@ -1,5 +1,7 @@
 package queryless.plugin.config;
 
+import java.nio.file.Path;
+
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
@@ -11,9 +13,31 @@ public class ConfigurationProvider {
     @Requirement
     private PlexusContainer container;
 
-    public PluginConfiguration getConfiguration() {
+    private PluginConfiguration configuration;
+
+    public String getPackageName() {
+        return getConfiguration().getPackageName();
+    }
+
+    public Path getGeneratePath() {
+        return getConfiguration().getGeneratePath();
+    }
+
+    public Path getResourcesPath() {
+        return getConfiguration().getRootPath().resolve(getConfiguration().getResourcesPath());
+    }
+
+    public Path getRootPath() {
+        return getConfiguration().getRootPath();
+    }
+
+    private PluginConfiguration getConfiguration() {
         try {
-            return container.lookup(PluginConfiguration.class);
+            if (configuration == null) {
+                configuration = container.lookup(PluginConfiguration.class);
+            }
+
+            return configuration;
 
         } catch (ComponentLookupException e) {
             throw new RuntimeException(e);

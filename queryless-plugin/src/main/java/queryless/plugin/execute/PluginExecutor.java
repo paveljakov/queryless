@@ -1,23 +1,23 @@
 package queryless.plugin.execute;
 
+import java.io.IOException;
+import java.nio.file.Files;
+
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
 import org.sonatype.guice.plexus.config.Hints;
+
+import com.squareup.javapoet.JavaFile;
+
 import queryless.plugin.QuerylessPlugin;
-import queryless.plugin.bundle.model.Bundle;
 import queryless.plugin.bundle.service.BundleService;
 import queryless.plugin.config.PluginConfiguration;
+import queryless.plugin.config.PluginConfigurationBuilder;
 import queryless.plugin.generator.CodeGenerator;
 import queryless.plugin.source.loader.SourcesLoader;
-import queryless.plugin.source.model.Source;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Component(role = PluginExecutor.class)
 public class PluginExecutor {
@@ -40,6 +40,8 @@ public class PluginExecutor {
     @Requirement
     private CodeGenerator codeGenerator;
 
+    private String[] sourcesLocations;
+
     private PluginConfiguration pluginConfiguration;
 
     public void execute(QuerylessPlugin plugin) throws IOException {
@@ -51,30 +53,39 @@ public class PluginExecutor {
     private void executeInternal() throws IOException {
         logger.info("Generating query constants.");
 
-        List<Source> sources = sourcesLoader
-                .load(pluginConfiguration.getSources(), pluginConfiguration.getRoot().toPath(), pluginConfiguration.getResourcesPath());
-
-        List<Bundle> bundles = sources.stream().map(bundleService::build).collect(Collectors.toList());
-
-        bundles.forEach(codeGenerator::generate);
+        sourcesLoader.load(sourcesLocations).stream()
+                .map(bundleService::build)
+                .map(codeGenerator::generate)
+                .forEach(this::writeToFile);
     }
 
     private void init(QuerylessPlugin plugin) throws IOException {
-        pluginConfiguration = new PluginConfiguration(
-                plugin.getSources(),
-                plugin.getPackageName(),
-                plugin.getGeneratePath(),
-                plugin.getResourcesPath(),
-                plugin.getRoot());
+        sourcesLocations = plugin.getSources();
+
+        pluginConfiguration = new PluginConfigurationBuilder()
+                .setPackageName(plugin.getPackageName())
+                .setGeneratePath(plugin.getGeneratePath().toPath())
+                .setResourcesPath(plugin.getResourcesPath())
+                .setRootPath(plugin.getRoot().toPath())
+                .createPluginConfiguration();
 
         container.addComponent(pluginConfiguration, PluginConfiguration.class, Hints.DEFAULT_HINT);
 
-        Files.createDirectories(pluginConfiguration.getGeneratePath().toPath());
+        Files.createDirectories(pluginConfiguration.getGeneratePath());
     }
 
     private void finish() {
-        project.addCompileSourceRoot(pluginConfiguration.getGeneratePath().getPath());
-        project.addTestCompileSourceRoot(pluginConfiguration.getGeneratePath().getPath());
+        project.addCompileSourceRoot(pluginConfiguration.getGeneratePath().toString());
+        project.addTestCompileSourceRoot(pluginConfiguration.getGeneratePath().toString());
+    }
+
+    private void writeToFile(final JavaFile javaFile) {
+        try {
+            javaFile.writeTo(pluginConfiguration.getGeneratePath());
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
