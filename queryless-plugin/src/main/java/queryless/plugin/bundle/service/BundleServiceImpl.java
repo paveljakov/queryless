@@ -1,18 +1,19 @@
-package queryless.plugin.generator;
-
-import java.util.List;
+package queryless.plugin.bundle.service;
 
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
-
-import queryless.plugin.query.model.Query;
+import queryless.plugin.bundle.model.Bundle;
+import queryless.plugin.bundle.model.Query;
 import queryless.plugin.source.model.Source;
 import queryless.plugin.source.splitter.SourceSplitter;
 import queryless.plugin.source.splitter.SourceSplitterFactory;
+import queryless.plugin.utils.NameUtils;
 
-@Component(role = ConstantsGenerator.class)
-public class ConstantsGeneratorImpl implements ConstantsGenerator {
+import java.util.List;
+
+@Component(role = BundleService.class)
+public class BundleServiceImpl implements BundleService {
 
     @Requirement
     private Logger logger;
@@ -21,11 +22,10 @@ public class ConstantsGeneratorImpl implements ConstantsGenerator {
     private SourceSplitterFactory sourceSplitterFactory;
 
     @Override
-    public void generate(final Source source) {
+    public Bundle build(final Source source) {
         final SourceSplitter splitter = sourceSplitterFactory.get(source.getType());
         final List<Query> queries = splitter.split(source);
-
-        queries.forEach(s -> logger.info(s.getText()));
+        return new Bundle(source.getName(), queries);
     }
 
 }

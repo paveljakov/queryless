@@ -1,30 +1,23 @@
 package queryless.plugin.execute;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
-
-import javax.lang.model.element.Modifier;
-
-import org.apache.commons.io.FileUtils;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
 import org.sonatype.guice.plexus.config.Hints;
-
-import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.TypeSpec;
-
 import queryless.plugin.QuerylessPlugin;
+import queryless.plugin.bundle.model.Bundle;
+import queryless.plugin.bundle.service.BundleService;
 import queryless.plugin.config.PluginConfiguration;
-import queryless.plugin.generator.ConstantsGenerator;
+import queryless.plugin.generator.CodeGenerator;
 import queryless.plugin.source.loader.SourcesLoader;
 import queryless.plugin.source.model.Source;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component(role = PluginExecutor.class)
 public class PluginExecutor {
@@ -42,7 +35,10 @@ public class PluginExecutor {
     private SourcesLoader sourcesLoader;
 
     @Requirement
-    private ConstantsGenerator constantsGenerator;
+    private BundleService bundleService;
+
+    @Requirement
+    private CodeGenerator codeGenerator;
 
     private PluginConfiguration pluginConfiguration;
 
@@ -58,45 +54,9 @@ public class PluginExecutor {
         List<Source> sources = sourcesLoader
                 .load(pluginConfiguration.getSources(), pluginConfiguration.getRoot().toPath(), pluginConfiguration.getResourcesPath());
 
-        sources.forEach(constantsGenerator::generate);
+        List<Bundle> bundles = sources.stream().map(bundleService::build).collect(Collectors.toList());
 
-        Path test = Paths.get(pluginConfiguration.getGeneratePath().toString(), "Test.java");
-        Files.createFile(test);
-
-        MethodSpec flux = MethodSpec.constructorBuilder()
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(String.class, "greeting")
-                .addStatement("this.$N = $N", "greeting", "greeting")
-                .build();
-
-        TypeSpec helloWorld = TypeSpec.classBuilder("Test")
-                .addModifiers(Modifier.PUBLIC)
-                .addField(String.class, "greeting", Modifier.PRIVATE, Modifier.FINAL)
-                .addMethod(flux)
-                .build();
-
-        //            writer.emitPackage(packageName)
-        //                    //.emitImports()
-        //                    .emitJavadoc("test")
-        //                    .beginType("Person", "class", EnumSet.of(PUBLIC, FINAL))
-        //                    .emitEmptyLine()
-        //                    .emitJavadoc("Query:<br /><br /><code><pre>SELECT<br />*<br />FROM</pre></code>")
-        //                    .emitField("String", "QUERY_1", EnumSet.of(PUBLIC, STATIC, FINAL))
-        //                    .emitEmptyLine()
-        //                    .emitJavadoc("test")
-        //                    .emitField("String", "lastName", EnumSet.of(PUBLIC, STATIC, FINAL))
-        //                    .emitEmptyLine()
-        //                    .beginConstructor(EnumSet.of(PRIVATE))
-        //                    .endConstructor()
-        //                    .emitEmptyLine()
-        //                    .emitJavadoc("Returns the person's full name.")
-        //                    .beginMethod("String", "getName", EnumSet.of(PUBLIC))
-        //                    .emitStatement("return firstName + \" \" + lastName")
-        //                    .endMethod()
-        //                    .emitEmptyLine()
-        //                    .endType();
-
-        FileUtils.writeStringToFile(test.toFile(), helloWorld.toString(), StandardCharsets.UTF_8);
+        bundles.forEach(codeGenerator::generate);
     }
 
     private void init(QuerylessPlugin plugin) throws IOException {

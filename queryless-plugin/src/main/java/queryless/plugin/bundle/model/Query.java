@@ -1,4 +1,4 @@
-package queryless.plugin.query.model;
+package queryless.plugin.bundle.model;
 
 import lombok.Data;
 
