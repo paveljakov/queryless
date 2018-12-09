@@ -17,7 +17,7 @@ public class SqlSourceSplitter implements SourceSplitter {
     }
 
     @Override
-    public SourceType getSupports() {
+    public SourceType supports() {
         return SourceType.SQL;
     }
 

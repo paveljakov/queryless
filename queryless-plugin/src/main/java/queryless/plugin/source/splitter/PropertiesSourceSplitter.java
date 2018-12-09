@@ -28,7 +28,7 @@ public class PropertiesSourceSplitter implements SourceSplitter {
     }
 
     @Override
-    public SourceType getSupports() {
+    public SourceType supports() {
         return SourceType.PROPERTIES;
     }
 

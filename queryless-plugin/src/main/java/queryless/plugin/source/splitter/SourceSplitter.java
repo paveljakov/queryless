@@ -10,6 +10,6 @@ public interface SourceSplitter {
 
     List<Query> split(Source source);
 
-    SourceType getSupports();
+    SourceType supports();
 
 }

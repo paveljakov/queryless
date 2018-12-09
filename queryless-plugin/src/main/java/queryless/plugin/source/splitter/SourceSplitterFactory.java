@@ -16,7 +16,7 @@ public class SourceSplitterFactory {
 
     public SourceSplitter get(final SourceType type) {
         return splitters.stream()
-                .filter(s -> Objects.equals(s.getSupports(), type))
+                .filter(s -> Objects.equals(s.supports(), type))
                 .findAny()
                 .orElseThrow(() -> new IllegalStateException("Unsupported source type: " + type));
     }
