@@ -17,7 +17,7 @@ import queryless.plugin.bundle.model.Bundle;
 import queryless.plugin.bundle.model.Query;
 import queryless.plugin.config.ConfigurationProvider;
 import queryless.plugin.source.splitter.SourceSplitterFactory;
-import queryless.plugin.utils.TextUtils;
+import queryless.plugin.utils.QueryTextUtils;
 
 @Component(role = CodeGenerator.class)
 public class CodeGeneratorImpl implements CodeGenerator {
@@ -38,7 +38,7 @@ public class CodeGeneratorImpl implements CodeGenerator {
                 .map(this::buildField)
                 .collect(Collectors.toList());
 
-        final String className = TextUtils.toClassName(bundle.getName());
+        final String className = QueryTextUtils.toClassName(bundle.getName());
 
         final TypeSpec javaClass = TypeSpec.classBuilder(className)
                 .addModifiers(Modifier.PUBLIC)
@@ -50,8 +50,8 @@ public class CodeGeneratorImpl implements CodeGenerator {
     }
 
     private FieldSpec buildField(final Query query) {
-        return FieldSpec.builder(String.class, TextUtils.toConstantName(query.getId()))
-                .addJavadoc("<pre>{@code $L}</pre>\n", TextUtils.removeIndentation(query.getText()))
+        return FieldSpec.builder(String.class, QueryTextUtils.toConstantName(query.getId()))
+                .addJavadoc("<pre>{@code $L}</pre>\n", query.getText())
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
                 .initializer("$S", query.getText())
                 .build();

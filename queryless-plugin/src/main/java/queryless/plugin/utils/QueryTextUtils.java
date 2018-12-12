@@ -15,7 +15,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class TextUtils {
+public final class QueryTextUtils {
 
     public static String toClassName(final String name) {
         final String escapedName = toNamingConvention(name);
@@ -27,10 +27,14 @@ public final class TextUtils {
         return escapedName.toUpperCase();
     }
 
+    public static List<String> splitLines(final String text) {
+        return new ArrayList<>(Arrays.asList(text.split("\\r?\\n")));
+    }
+
     public static String removeIndentation(final String text) {
         Objects.requireNonNull(text);
 
-        final String[] lines = trimEmptyStrings(text.split("\\r?\\n"));
+        final String[] lines = trimEmptyStrings(splitLines(text));
         if (ArrayUtils.isEmpty(lines)) {
             return text;
         }
@@ -47,8 +51,8 @@ public final class TextUtils {
         return String.join("\n", result);
     }
 
-    private static String[] trimEmptyStrings(final String[] strings) {
-        final List<String> result = new ArrayList<>(Arrays.asList(strings));
+    private static String[] trimEmptyStrings(final List<String> strings) {
+        final List<String> result = new ArrayList<>(strings);
 
         for (final Iterator<String> iterator = result.listIterator(); iterator.hasNext(); ) {
             final String str = iterator.next();

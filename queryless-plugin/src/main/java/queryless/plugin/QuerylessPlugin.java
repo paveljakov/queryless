@@ -39,6 +39,10 @@ public class QuerylessPlugin extends AbstractMojo {
                defaultValue = "src/main/resources")
     private String resourcesPath;
 
+    @Parameter(property = "queryless.sqlKeyPrefix",
+               defaultValue = "id:")
+    private String sqlKeyPrefix;
+
     @Parameter(defaultValue = "${project.basedir}")
     private File root;
 

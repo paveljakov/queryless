@@ -15,7 +15,6 @@ import com.squareup.javapoet.JavaFile;
 import queryless.plugin.QuerylessPlugin;
 import queryless.plugin.bundle.service.BundleService;
 import queryless.plugin.config.PluginConfiguration;
-import queryless.plugin.config.PluginConfigurationBuilder;
 import queryless.plugin.generator.CodeGenerator;
 import queryless.plugin.source.loader.SourcesLoader;
 
@@ -62,12 +61,12 @@ public class PluginExecutor {
     private void init(QuerylessPlugin plugin) throws IOException {
         sourcesLocations = plugin.getSources();
 
-        pluginConfiguration = new PluginConfigurationBuilder()
-                .setPackageName(plugin.getPackageName())
-                .setGeneratePath(plugin.getGeneratePath().toPath())
-                .setResourcesPath(plugin.getResourcesPath())
-                .setRootPath(plugin.getRoot().toPath())
-                .createPluginConfiguration();
+        pluginConfiguration = new PluginConfiguration(
+                plugin.getPackageName(),
+                plugin.getGeneratePath().toPath(),
+                plugin.getResourcesPath(),
+                plugin.getSqlKeyPrefix(),
+                plugin.getRoot().toPath());
 
         container.addComponent(pluginConfiguration, PluginConfiguration.class, Hints.DEFAULT_HINT);
 

@@ -3,30 +3,32 @@ package queryless.plugin.utils;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class TextUtilsTest {
+public class QueryTextUtilsTest {
 
     @Test
     public void toClassNameTest() {
-        Assert.assertEquals("SparePartsQueries", TextUtils.toClassName("spare-parts-queries"));
-        Assert.assertEquals("$1SparePartsQueries", TextUtils.toClassName("1-spare-parts-queries"));
-        Assert.assertEquals("$999sparePartsQueries", TextUtils.toClassName("999spare-parts-queries"));
-        Assert.assertEquals("Class", TextUtils.toClassName("class"));
-        Assert.assertEquals("Public", TextUtils.toClassName("public"));
-        Assert.assertEquals("PrivateStaticFinalMethodname", TextUtils.toClassName("private static final methodName()"));
-        Assert.assertEquals("OneTwoName", TextUtils.toClassName("ONE_TWO_NAME"));
-        Assert.assertEquals("OneTwoName", TextUtils.toClassName("ONE.TWO.NAME"));
+        // TODO use assertj soft assert
+        Assert.assertEquals("SparePartsQueries", QueryTextUtils.toClassName("spare-parts-queries"));
+        Assert.assertEquals("$1SparePartsQueries", QueryTextUtils.toClassName("1-spare-parts-queries"));
+        Assert.assertEquals("$999sparePartsQueries", QueryTextUtils.toClassName("999spare-parts-queries"));
+        Assert.assertEquals("Class", QueryTextUtils.toClassName("class"));
+        Assert.assertEquals("Public", QueryTextUtils.toClassName("public"));
+        Assert.assertEquals("PrivateStaticFinalMethodname", QueryTextUtils.toClassName("private static final methodName()"));
+        Assert.assertEquals("OneTwoName", QueryTextUtils.toClassName("ONE_TWO_NAME"));
+        Assert.assertEquals("OneTwoName", QueryTextUtils.toClassName("ONE.TWO.NAME"));
     }
 
     @Test
     public void toConstantNameTest() {
-        Assert.assertEquals("SPARE_PARTS_MERGE", TextUtils.toConstantName("spare-parts.merge"));
-        Assert.assertEquals("$1_SPARE_PARTS_MERGE", TextUtils.toConstantName("1-spare-parts.merge"));
-        Assert.assertEquals("$999SPARE_PARTS_MERGE", TextUtils.toConstantName("999spare-parts.merge"));
-        Assert.assertEquals("CLASS", TextUtils.toConstantName("class"));
-        Assert.assertEquals("PUBLIC", TextUtils.toConstantName("public"));
-        Assert.assertEquals("PRIVATE_STATIC_FINAL_METHODNAME__", TextUtils.toConstantName("private static final methodName()"));
-        Assert.assertEquals("ONE_TWO_NAME", TextUtils.toConstantName("ONE_TWO_NAME"));
-        Assert.assertEquals("ONE_TWO_NAME", TextUtils.toConstantName("ONE.TWO.NAME"));
+        // TODO use assertj soft assert
+        Assert.assertEquals("SPARE_PARTS_MERGE", QueryTextUtils.toConstantName("spare-parts.merge"));
+        Assert.assertEquals("$1_SPARE_PARTS_MERGE", QueryTextUtils.toConstantName("1-spare-parts.merge"));
+        Assert.assertEquals("$999SPARE_PARTS_MERGE", QueryTextUtils.toConstantName("999spare-parts.merge"));
+        Assert.assertEquals("CLASS", QueryTextUtils.toConstantName("class"));
+        Assert.assertEquals("PUBLIC", QueryTextUtils.toConstantName("public"));
+        Assert.assertEquals("PRIVATE_STATIC_FINAL_METHODNAME__", QueryTextUtils.toConstantName("private static final methodName()"));
+        Assert.assertEquals("ONE_TWO_NAME", QueryTextUtils.toConstantName("ONE_TWO_NAME"));
+        Assert.assertEquals("ONE_TWO_NAME", QueryTextUtils.toConstantName("ONE.TWO.NAME"));
     }
 
     @Test
@@ -62,7 +64,8 @@ public class TextUtilsTest {
                 + "    ?\n"
                 + ")";
 
-        Assert.assertEquals(unindentedQuery, TextUtils.removeIndentation(indentedQuery));
+        // TODO use assertj
+        Assert.assertEquals(unindentedQuery, QueryTextUtils.removeIndentation(indentedQuery));
     }
 
     @Test
@@ -98,7 +101,8 @@ public class TextUtilsTest {
                 + "\t?\n"
                 + ")";
 
-        Assert.assertEquals(unindentedQuery, TextUtils.removeIndentation(indentedQuery));
+        // TODO use assertj
+        Assert.assertEquals(unindentedQuery, QueryTextUtils.removeIndentation(indentedQuery));
     }
 
 }

@@ -19,6 +19,10 @@ public class ConfigurationProvider {
         return getConfiguration().getPackageName();
     }
 
+    public String getSqlKeyPrefix() {
+        return getConfiguration().getSqlKeyPrefix();
+    }
+
     public Path getGeneratePath() {
         return getConfiguration().getGeneratePath();
     }
