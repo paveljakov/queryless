@@ -78,7 +78,7 @@ public final class QueryTextUtils {
 
         String strippedName = name.replaceAll("[^A-Za-z0-9]", "_");
         if (StringUtils.isBlank(strippedName)) {
-            throw new IllegalStateException("Can not generate class name from: " + name);
+            throw new IllegalStateException("Can not generate name from: '" + name + "'");
         }
 
         if (isFirstCharNumber(strippedName)) {

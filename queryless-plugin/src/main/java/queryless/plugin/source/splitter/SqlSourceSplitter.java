@@ -38,8 +38,7 @@ public class SqlSourceSplitter implements SourceSplitter {
                 queryText = new StringBuilder();
 
             } else {
-                queryText.append(line);
-                queryText.append("\n");
+                queryText.append(line).append("\n");
             }
         }
 
@@ -55,7 +54,10 @@ public class SqlSourceSplitter implements SourceSplitter {
     }
 
     private String extractKey(final String line) {
-        return StringUtils.trim(StringUtils.substringAfter(line, configurationProvider.getSqlKeyPrefix()));
+        final String leveledLine = StringUtils.upperCase(line);
+        final String keyPrefix = StringUtils.upperCase(configurationProvider.getSqlKeyPrefix());
+
+        return StringUtils.trim(StringUtils.substringAfter(leveledLine, keyPrefix));
     }
 
     private boolean isIdLine(final String line) {

@@ -13,7 +13,8 @@ VALUES(
     ?
 )
 
--- id: employee.find
+-- ID: employee.find
+-- Finds employees by ID
 SELECT
     ID,
     NAME,
