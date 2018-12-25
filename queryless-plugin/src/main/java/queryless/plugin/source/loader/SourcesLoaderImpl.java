@@ -2,10 +2,9 @@ package queryless.plugin.source.loader;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
@@ -29,23 +28,36 @@ public class SourcesLoaderImpl implements SourcesLoader {
 
     @Override
     public List<Source> load(final String[] sources) {
-        final Set<Path> paths = resolveSources(sources);
-
-        return paths.stream()
+        return Arrays.stream(sources)
+                .map(this::resolveFiles)
+                .flatMap(Collection::stream)
+                .map(Path::normalize)
+                .distinct()
                 .sorted()
                 .map(this::build)
                 .collect(Collectors.toList());
     }
 
-    private Set<Path> resolveSources(final String[] sources) {
+    private Set<Path> resolveFiles(final String source) {
+        final Path sourcePath = configurationProvider.getResourcesPath().resolve(source);
+
+        if (Files.isDirectory(sourcePath)) {
+            return collectDirectoryFiles(sourcePath);
+        }
+
+        if (Files.isRegularFile(sourcePath)) {
+            return Collections.singleton(sourcePath);
+        }
+
+        logger.warn("Path is not file or folder: " + sourcePath);
+        return Collections.emptySet();
+    }
+
+    private Set<Path> collectDirectoryFiles(final Path directory) {
         final Set<Path> paths = new HashSet<>();
 
-        for (final String source : sources) {
-            final Path sourcePath = configurationProvider.getResourcesPath().resolve(source);
-
-            FileUtils.listFiles(sourcePath.toFile(), null, true)
-                    .forEach(file -> paths.add(file.toPath()));
-        }
+        FileUtils.listFiles(directory.toFile(), null, true)
+                .forEach(file -> paths.add(file.toPath()));
 
         return paths;
     }

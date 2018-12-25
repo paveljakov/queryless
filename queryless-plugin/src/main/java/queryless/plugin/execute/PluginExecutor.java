@@ -2,6 +2,7 @@ package queryless.plugin.execute;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.stream.Collectors;
 
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.PlexusContainer;
@@ -17,6 +18,7 @@ import queryless.plugin.bundle.service.BundleService;
 import queryless.plugin.config.PluginConfiguration;
 import queryless.plugin.generator.CodeGenerator;
 import queryless.plugin.source.loader.SourcesLoader;
+import queryless.plugin.source.model.Source;
 
 @Component(role = PluginExecutor.class)
 public class PluginExecutor {
@@ -53,7 +55,9 @@ public class PluginExecutor {
         logger.info("Generating query constants.");
 
         sourcesLoader.load(sourcesLocations).stream()
-                .map(bundleService::build)
+                .collect(Collectors.groupingBy(Source::getBundleName))
+                .entrySet().stream()
+                .map(e -> bundleService.build(e.getKey(), e.getValue()))
                 .map(codeGenerator::generate)
                 .forEach(this::writeToFile);
     }

@@ -6,6 +6,7 @@ import java.util.Objects;
 import org.apache.commons.io.FilenameUtils;
 
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
 
 @Data
 public class Source implements Comparable<Source> {
@@ -17,6 +18,10 @@ public class Source implements Comparable<Source> {
 
     public String getName() {
         return FilenameUtils.removeExtension(path.getFileName().toString());
+    }
+
+    public String getBundleName() {
+        return StringUtils.substringBefore(getName(), ".");
     }
 
     @Override
