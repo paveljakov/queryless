@@ -1,26 +1,25 @@
 package queryless.plugin.bundle.service;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
-import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.component.annotations.Requirement;
-import org.codehaus.plexus.logging.Logger;
-
 import queryless.plugin.bundle.model.Bundle;
 import queryless.plugin.bundle.model.Query;
 import queryless.plugin.source.model.Source;
 import queryless.plugin.source.splitter.SourceSplitterFactory;
 
-@Component(role = BundleService.class)
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+@Singleton
 public class BundleServiceImpl implements BundleService {
 
-    @Requirement
-    private Logger logger;
+    private final SourceSplitterFactory sourceSplitterFactory;
 
-    @Requirement
-    private SourceSplitterFactory sourceSplitterFactory;
+    @Inject
+    public BundleServiceImpl(final SourceSplitterFactory sourceSplitterFactory) {
+        this.sourceSplitterFactory = sourceSplitterFactory;
+    }
 
     @Override
     public Bundle build(final String bundleName, final List<Source> sources) {

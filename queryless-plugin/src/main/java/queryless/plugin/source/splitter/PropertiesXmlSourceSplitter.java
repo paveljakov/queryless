@@ -1,5 +1,13 @@
 package queryless.plugin.source.splitter;
 
+import org.apache.commons.io.IOUtils;
+import queryless.plugin.bundle.model.Query;
+import queryless.plugin.source.model.Source;
+import queryless.plugin.source.model.SourceType;
+import queryless.plugin.utils.QueryTextUtils;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -8,16 +16,12 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
-import org.apache.commons.io.IOUtils;
-import org.codehaus.plexus.component.annotations.Component;
-
-import queryless.plugin.bundle.model.Query;
-import queryless.plugin.source.model.Source;
-import queryless.plugin.source.model.SourceType;
-import queryless.plugin.utils.QueryTextUtils;
-
-@Component(role = SourceSplitter.class, hint = "xml-properties")
+@Singleton
 public class PropertiesXmlSourceSplitter implements SourceSplitter {
+
+    @Inject
+    public PropertiesXmlSourceSplitter() {
+    }
 
     @Override
     public List<Query> split(final Source source) {

@@ -1,11 +1,5 @@
 package queryless.plugin.source.splitter;
 
-import static org.mockito.Mockito.when;
-
-import java.io.File;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-
 import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
 import org.junit.Before;
@@ -13,11 +7,16 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-
 import queryless.plugin.bundle.model.Query;
-import queryless.plugin.config.ConfigurationProvider;
+import queryless.plugin.config.PluginConfiguration;
 import queryless.plugin.source.model.Source;
 import queryless.plugin.source.model.SourceType;
+
+import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SqlSourceSplitterTest {
@@ -26,11 +25,10 @@ public class SqlSourceSplitterTest {
 
     @Before
     public void setUp() {
-        final ConfigurationProvider configurationProvider = Mockito.mock(ConfigurationProvider.class);
-        when(configurationProvider.getSqlKeyPrefix()).thenReturn("id:");
+        final PluginConfiguration configuration = Mockito.mock(PluginConfiguration.class);
+        when(configuration.getSqlKeyPrefix()).thenReturn("id:");
 
-        splitter = new SqlSourceSplitter();
-        splitter.setConfigurationProvider(configurationProvider);
+        splitter = new SqlSourceSplitter(configuration);
     }
 
     @Test

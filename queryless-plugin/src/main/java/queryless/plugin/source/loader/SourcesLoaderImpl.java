@@ -1,5 +1,14 @@
 package queryless.plugin.source.loader;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import queryless.plugin.config.PluginConfiguration;
+import queryless.plugin.logging.Log;
+import queryless.plugin.source.model.Source;
+import queryless.plugin.source.model.SourceType;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -7,24 +16,18 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.component.annotations.Requirement;
-import org.codehaus.plexus.logging.Logger;
-
-import queryless.plugin.config.ConfigurationProvider;
-import queryless.plugin.source.model.Source;
-import queryless.plugin.source.model.SourceType;
-
-@Component(role = SourcesLoader.class)
+@Singleton
 public class SourcesLoaderImpl implements SourcesLoader {
 
-    @Requirement
-    private Logger logger;
+    private final Log log;
 
-    @Requirement
-    private ConfigurationProvider configurationProvider;
+    private final PluginConfiguration configuration;
+
+    @Inject
+    public SourcesLoaderImpl(final Log log, final PluginConfiguration configuration) {
+        this.log = log;
+        this.configuration = configuration;
+    }
 
     @Override
     public List<Source> load(final String[] sources) {
@@ -39,7 +42,7 @@ public class SourcesLoaderImpl implements SourcesLoader {
     }
 
     private Set<Path> resolveFiles(final String source) {
-        final Path sourcePath = configurationProvider.getResourcesPath().resolve(source);
+        final Path sourcePath = configuration.getResourcesPath().resolve(source);
 
         if (Files.isDirectory(sourcePath)) {
             return collectDirectoryFiles(sourcePath);
@@ -49,7 +52,7 @@ public class SourcesLoaderImpl implements SourcesLoader {
             return Collections.singleton(sourcePath);
         }
 
-        logger.warn("Path is not file or folder: " + sourcePath);
+        log.warn("Path is not file or folder: " + sourcePath);
         return Collections.emptySet();
     }
 
@@ -64,7 +67,7 @@ public class SourcesLoaderImpl implements SourcesLoader {
 
     private Source build(final Path path) {
         try {
-            logger.info("Loading source file: " + path);
+            log.info("Loading source file: " + path);
 
             final SourceType type = resolveType(path);
             final String content = loadContent(path);

@@ -1,18 +1,21 @@
 package queryless.plugin.source.splitter;
 
-import java.util.List;
-import java.util.Objects;
-
-import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.component.annotations.Requirement;
-
 import queryless.plugin.source.model.SourceType;
 
-@Component(role = SourceSplitterFactory.class)
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import java.util.Objects;
+import java.util.Set;
+
+@Singleton
 public class SourceSplitterFactory {
 
-    @Requirement
-    private List<SourceSplitter> splitters;
+    private final Set<SourceSplitter> splitters;
+
+    @Inject
+    public SourceSplitterFactory(final Set<SourceSplitter> splitters) {
+        this.splitters = splitters;
+    }
 
     public SourceSplitter get(final SourceType type) {
         return splitters.stream()
