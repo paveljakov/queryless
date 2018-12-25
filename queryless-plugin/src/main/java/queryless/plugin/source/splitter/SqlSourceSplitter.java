@@ -1,25 +1,26 @@
 package queryless.plugin.source.splitter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.lang3.StringUtils;
-import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.component.annotations.Requirement;
-
-import lombok.Setter;
 import queryless.plugin.bundle.model.Query;
-import queryless.plugin.config.ConfigurationProvider;
+import queryless.plugin.config.PluginConfiguration;
 import queryless.plugin.source.model.Source;
 import queryless.plugin.source.model.SourceType;
 import queryless.plugin.utils.QueryTextUtils;
 
-@Setter
-@Component(role = SourceSplitter.class, hint = "sql")
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import java.util.ArrayList;
+import java.util.List;
+
+@Singleton
 public class SqlSourceSplitter implements SourceSplitter {
 
-    @Requirement
-    private ConfigurationProvider configurationProvider;
+    private final PluginConfiguration configuration;
+
+    @Inject
+    public SqlSourceSplitter(final PluginConfiguration configuration) {
+        this.configuration = configuration;
+    }
 
     @Override
     public List<Query> split(final Source source) {
@@ -55,14 +56,14 @@ public class SqlSourceSplitter implements SourceSplitter {
 
     private String extractKey(final String line) {
         final String leveledLine = StringUtils.upperCase(line);
-        final String keyPrefix = StringUtils.upperCase(configurationProvider.getSqlKeyPrefix());
+        final String keyPrefix = StringUtils.upperCase(configuration.getSqlKeyPrefix());
 
         return StringUtils.trim(StringUtils.substringAfter(leveledLine, keyPrefix));
     }
 
     private boolean isIdLine(final String line) {
         final String trimmed = StringUtils.trim(line);
-        return StringUtils.startsWith(trimmed, "--") && StringUtils.containsIgnoreCase(trimmed, configurationProvider.getSqlKeyPrefix());
+        return StringUtils.startsWith(trimmed, "--") && StringUtils.containsIgnoreCase(trimmed, configuration.getSqlKeyPrefix());
     }
 
     @Override

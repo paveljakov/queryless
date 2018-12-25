@@ -1,10 +1,10 @@
 package queryless.plugin.source.splitter;
 
-import java.util.List;
-
 import queryless.plugin.bundle.model.Query;
 import queryless.plugin.source.model.Source;
 import queryless.plugin.source.model.SourceType;
+
+import java.util.List;
 
 public interface SourceSplitter {
 

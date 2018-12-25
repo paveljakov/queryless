@@ -1,58 +1,42 @@
 package queryless.plugin.execute;
 
+import com.squareup.javapoet.JavaFile;
+import queryless.plugin.bundle.service.BundleService;
+import queryless.plugin.config.PluginConfiguration;
+import queryless.plugin.generator.CodeGenerator;
+import queryless.plugin.logging.Log;
+import queryless.plugin.source.loader.SourcesLoader;
+import queryless.plugin.source.model.Source;
+
+import javax.inject.Inject;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.stream.Collectors;
 
-import org.apache.maven.project.MavenProject;
-import org.codehaus.plexus.PlexusContainer;
-import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.component.annotations.Requirement;
-import org.codehaus.plexus.logging.Logger;
-import org.sonatype.guice.plexus.config.Hints;
-
-import com.squareup.javapoet.JavaFile;
-
-import queryless.plugin.QuerylessPlugin;
-import queryless.plugin.bundle.service.BundleService;
-import queryless.plugin.config.PluginConfiguration;
-import queryless.plugin.generator.CodeGenerator;
-import queryless.plugin.source.loader.SourcesLoader;
-import queryless.plugin.source.model.Source;
-
-@Component(role = PluginExecutor.class)
 public class PluginExecutor {
 
-    @Requirement
-    private Logger logger;
+    private final Log log;
+    private final PluginConfiguration configuration;
 
-    @Requirement
-    private PlexusContainer container;
+    private final SourcesLoader sourcesLoader;
+    private final BundleService bundleService;
+    private final CodeGenerator codeGenerator;
 
-    @Requirement
-    private MavenProject project;
+    @Inject
+    public PluginExecutor(final Log log, final PluginConfiguration configuration, final SourcesLoader sourcesLoader,
+                          final BundleService bundleService, final CodeGenerator codeGenerator) {
 
-    @Requirement
-    private SourcesLoader sourcesLoader;
-
-    @Requirement
-    private BundleService bundleService;
-
-    @Requirement
-    private CodeGenerator codeGenerator;
-
-    private String[] sourcesLocations;
-
-    private PluginConfiguration pluginConfiguration;
-
-    public void execute(QuerylessPlugin plugin) throws IOException {
-        init(plugin);
-        executeInternal();
-        finish();
+        this.log = log;
+        this.configuration = configuration;
+        this.sourcesLoader = sourcesLoader;
+        this.bundleService = bundleService;
+        this.codeGenerator = codeGenerator;
     }
 
-    private void executeInternal() throws IOException {
-        logger.info("Generating query constants.");
+    public void execute(final String[] sourcesLocations) throws IOException {
+        Files.createDirectories(configuration.getGeneratePath());
+
+        log.info("Generating query constants.");
 
         sourcesLoader.load(sourcesLocations).stream()
                 .collect(Collectors.groupingBy(Source::getBundleName))
@@ -62,29 +46,9 @@ public class PluginExecutor {
                 .forEach(this::writeToFile);
     }
 
-    private void init(QuerylessPlugin plugin) throws IOException {
-        sourcesLocations = plugin.getSources();
-
-        pluginConfiguration = new PluginConfiguration(
-                plugin.getPackageName(),
-                plugin.getGeneratePath().toPath(),
-                plugin.getResourcesPath(),
-                plugin.getSqlKeyPrefix(),
-                plugin.getRoot().toPath());
-
-        container.addComponent(pluginConfiguration, PluginConfiguration.class, Hints.DEFAULT_HINT);
-
-        Files.createDirectories(pluginConfiguration.getGeneratePath());
-    }
-
-    private void finish() {
-        project.addCompileSourceRoot(pluginConfiguration.getGeneratePath().toString());
-        project.addTestCompileSourceRoot(pluginConfiguration.getGeneratePath().toString());
-    }
-
     private void writeToFile(final JavaFile javaFile) {
         try {
-            javaFile.writeTo(pluginConfiguration.getGeneratePath());
+            javaFile.writeTo(configuration.getGeneratePath());
 
         } catch (IOException e) {
             throw new RuntimeException(e);

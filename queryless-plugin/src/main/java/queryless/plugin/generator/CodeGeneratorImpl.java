@@ -1,35 +1,32 @@
 package queryless.plugin.generator;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.lang.model.element.Modifier;
-
-import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.component.annotations.Requirement;
-import org.codehaus.plexus.logging.Logger;
-
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
-
 import queryless.plugin.bundle.model.Bundle;
 import queryless.plugin.bundle.model.Query;
-import queryless.plugin.config.ConfigurationProvider;
+import queryless.plugin.config.PluginConfiguration;
 import queryless.plugin.source.splitter.SourceSplitterFactory;
 import queryless.plugin.utils.QueryTextUtils;
 
-@Component(role = CodeGenerator.class)
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import javax.lang.model.element.Modifier;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Singleton
 public class CodeGeneratorImpl implements CodeGenerator {
 
-    @Requirement
-    private Logger logger;
+    private final SourceSplitterFactory sourceSplitterFactory;
 
-    @Requirement
-    private SourceSplitterFactory sourceSplitterFactory;
+    private final PluginConfiguration configuration;
 
-    @Requirement
-    private ConfigurationProvider configurationProvider;
+    @Inject
+    public CodeGeneratorImpl(final SourceSplitterFactory sourceSplitterFactory, final PluginConfiguration configuration) {
+        this.sourceSplitterFactory = sourceSplitterFactory;
+        this.configuration = configuration;
+    }
 
     @Override
     public JavaFile generate(final Bundle bundle) {
@@ -45,7 +42,7 @@ public class CodeGeneratorImpl implements CodeGenerator {
                 .addFields(constants)
                 .build();
 
-        return JavaFile.builder(configurationProvider.getPackageName(), javaClass)
+        return JavaFile.builder(configuration.getPackageName(), javaClass)
                 .build();
     }
 

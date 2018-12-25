@@ -1,11 +1,10 @@
 package queryless.plugin.config;
 
-import java.nio.file.Path;
-
-import org.apache.commons.lang3.builder.ToStringBuilder;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
+import java.nio.file.Path;
 
 @Getter
 @AllArgsConstructor
@@ -16,6 +15,10 @@ public class PluginConfiguration {
     private final String resourcesPath;
     private final String sqlKeyPrefix;
     private final Path rootPath;
+
+    public Path getResourcesPath() {
+        return rootPath.resolve(resourcesPath);
+    }
 
     @Override
     public String toString() {
