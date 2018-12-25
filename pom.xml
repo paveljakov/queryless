@@ -12,6 +12,7 @@
     <modules>
         <module>queryless-plugin</module>
         <module>queryless-tests</module>
+        <module>queryless-core</module>
     </modules>
 
     <properties>
@@ -46,6 +47,12 @@
                 <artifactId>maven-plugin-annotations</artifactId>
                 <version>3.4</version>
                 <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>queryless</groupId>
+                <artifactId>queryless-core</artifactId>
+                <version>${project.version}</version>
             </dependency>
 
             <dependency>

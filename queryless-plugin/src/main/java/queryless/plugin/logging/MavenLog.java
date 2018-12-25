@@ -1,5 +1,7 @@
 package queryless.plugin.logging;
 
+import queryless.core.logging.Log;
+
 public class MavenLog implements Log {
 
     private final org.apache.maven.plugin.logging.Log log;
