@@ -1,12 +1,12 @@
 package queryless.core;
 
+import javax.inject.Singleton;
+
 import dagger.BindsInstance;
 import dagger.Component;
 import queryless.core.config.PluginConfiguration;
 import queryless.core.execute.PluginExecutor;
 import queryless.core.logging.Log;
-
-import javax.inject.Singleton;
 
 @Singleton
 @Component(modules = QuerylessModule.class)

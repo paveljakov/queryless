@@ -1,11 +1,12 @@
 package queryless.core.source.splitter;
 
-import queryless.core.source.model.SourceType;
+import java.util.Objects;
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.Objects;
-import java.util.Set;
+
+import queryless.core.source.model.SourceType;
 
 @Singleton
 public class SourceSplitters {

@@ -30,7 +30,7 @@
             </plugin>
             <plugin>
                 <groupId>queryless</groupId>
-                <artifactId>queryless-plugin</artifactId>
+                <artifactId>queryless-plugin-maven</artifactId>
                 <version>1.0.0-SNAPSHOT</version>
                 <executions>
                     <execution>

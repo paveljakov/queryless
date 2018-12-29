@@ -1,12 +1,14 @@
 package queryless.plugin.logging;
 
+import org.gradle.api.logging.Logger;
+
 import queryless.core.logging.Log;
 
-public class MavenLog implements Log {
+public class GradleLog implements Log {
 
-    private final org.apache.maven.plugin.logging.Log log;
+    private final Logger log;
 
-    public MavenLog(final org.apache.maven.plugin.logging.Log log) {
+    public GradleLog(final Logger log) {
         this.log = log;
     }
 
@@ -27,7 +29,7 @@ public class MavenLog implements Log {
 
     @Override
     public void debug(final Throwable t) {
-        log.debug(t);
+        log.debug("", t);
     }
 
     @Override
@@ -47,7 +49,7 @@ public class MavenLog implements Log {
 
     @Override
     public void info(final Throwable t) {
-        log.info(t);
+        log.info("", t);
     }
 
     @Override
@@ -67,7 +69,7 @@ public class MavenLog implements Log {
 
     @Override
     public void warn(final Throwable t) {
-        log.warn(t);
+        log.warn("", t);
     }
 
     @Override
@@ -87,7 +89,7 @@ public class MavenLog implements Log {
 
     @Override
     public void error(final Throwable t) {
-        log.error(t);
+        log.error("", t);
     }
 
 }

@@ -1,11 +1,13 @@
 package queryless.core.file;
 
-import com.squareup.javapoet.JavaFile;
-import queryless.core.config.PluginConfiguration;
+import java.io.IOException;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.io.IOException;
+
+import com.squareup.javapoet.JavaFile;
+
+import queryless.core.config.PluginConfiguration;
 
 @Singleton
 public class JavaFileService implements CodeFileService<JavaFile> {

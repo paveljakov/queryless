@@ -1,19 +1,21 @@
 package queryless.core.generator;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import javax.lang.model.element.Modifier;
+
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
+
 import queryless.core.bundle.model.Bundle;
 import queryless.core.bundle.model.Query;
 import queryless.core.config.PluginConfiguration;
 import queryless.core.source.splitter.SourceSplitters;
 import queryless.core.utils.QueryTextUtils;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import javax.lang.model.element.Modifier;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Singleton
 public class CodeGeneratorImpl implements CodeGenerator {

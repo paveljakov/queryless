@@ -1,6 +1,15 @@
 package queryless.core.execute;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.inject.Inject;
+
 import com.squareup.javapoet.JavaFile;
+
 import queryless.core.bundle.service.BundleService;
 import queryless.core.config.PluginConfiguration;
 import queryless.core.file.CodeFileService;
@@ -8,11 +17,6 @@ import queryless.core.generator.CodeGenerator;
 import queryless.core.logging.Log;
 import queryless.core.source.loader.SourcesLoader;
 import queryless.core.source.model.Source;
-
-import javax.inject.Inject;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.util.stream.Collectors;
 
 public class PluginExecutor {
 
@@ -38,12 +42,12 @@ public class PluginExecutor {
         this.codeFileService = codeFileService;
     }
 
-    public void execute(final String[] sourcesLocations) throws IOException {
+    public void execute(final Set<Path> sources) throws IOException {
         Files.createDirectories(configuration.getGeneratePath());
 
         log.info("Generating query constants.");
 
-        sourcesLoader.load(sourcesLocations).stream()
+        sourcesLoader.load(sources).stream()
                 .collect(Collectors.groupingBy(Source::getBundleName))
                 .entrySet().stream()
                 .map(e -> bundleService.build(e.getKey(), e.getValue()))

@@ -1,16 +1,18 @@
 package queryless.core.source.splitter;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import org.apache.commons.lang3.StringUtils;
+
 import queryless.core.bundle.model.Query;
 import queryless.core.config.PluginConfiguration;
 import queryless.core.source.model.Source;
 import queryless.core.source.model.SourceType;
 import queryless.core.utils.QueryTextUtils;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import java.util.ArrayList;
-import java.util.List;
 
 @Singleton
 public class SqlSourceSplitter implements SourceSplitter {
