@@ -16,12 +16,12 @@ public class MavenLog implements Log {
     }
 
     @Override
-    public void debug(final CharSequence msg) {
+    public void debug(final String msg) {
         log.debug(msg);
     }
 
     @Override
-    public void debug(final CharSequence msg, final Throwable t) {
+    public void debug(final String msg, final Throwable t) {
         log.debug(msg, t);
     }
 
@@ -36,12 +36,12 @@ public class MavenLog implements Log {
     }
 
     @Override
-    public void info(final CharSequence msg) {
+    public void info(final String msg) {
         log.info(msg);
     }
 
     @Override
-    public void info(final CharSequence msg, final Throwable t) {
+    public void info(final String msg, final Throwable t) {
         log.info(msg, t);
     }
 
@@ -56,12 +56,12 @@ public class MavenLog implements Log {
     }
 
     @Override
-    public void warn(final CharSequence msg) {
+    public void warn(final String msg) {
         log.warn(msg);
     }
 
     @Override
-    public void warn(final CharSequence msg, final Throwable t) {
+    public void warn(final String msg, final Throwable t) {
         log.warn(msg, t);
     }
 
@@ -76,12 +76,12 @@ public class MavenLog implements Log {
     }
 
     @Override
-    public void error(final CharSequence msg) {
+    public void error(final String msg) {
         log.error(msg);
     }
 
     @Override
-    public void error(final CharSequence msg, final Throwable t) {
+    public void error(final String msg, final Throwable t) {
         log.error(msg, t);
     }
 

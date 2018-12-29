@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+    <comment>Employee Queries</comment>
+
+    <entry key="employee.insert-new">
+        INSERT INTO
+            EMPLOYEE(
+                ID,
+                NAME,
+                AGE,
+                DEPARTMENT
+            )
+        VALUES(
+            EMPLOYEE_SEQ.NEXTVAL,
+            ?,
+            ?,
+            ?
+        )
+    </entry>
+
+</properties>

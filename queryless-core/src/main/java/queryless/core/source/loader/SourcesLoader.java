@@ -1,11 +1,13 @@
 package queryless.core.source.loader;
 
-import queryless.core.source.model.Source;
-
+import java.nio.file.Path;
 import java.util.List;
+import java.util.Set;
+
+import queryless.core.source.model.Source;
 
 public interface SourcesLoader {
 
-    List<Source> load(String[] sources);
+    List<Source> load(Set<Path> sources);
 
 }

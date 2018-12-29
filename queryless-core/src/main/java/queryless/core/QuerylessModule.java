@@ -1,6 +1,7 @@
 package queryless.core;
 
 import com.squareup.javapoet.JavaFile;
+
 import dagger.Binds;
 import dagger.Module;
 import dagger.multibindings.IntoSet;

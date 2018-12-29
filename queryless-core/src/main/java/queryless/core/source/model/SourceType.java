@@ -1,8 +1,8 @@
 package queryless.core.source.model;
 
-import lombok.Getter;
-
 import java.util.Arrays;
+
+import lombok.Getter;
 
 @Getter
 public enum SourceType {

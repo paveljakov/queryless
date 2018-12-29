@@ -1,9 +1,9 @@
 package queryless.core.bundle.service;
 
+import java.util.List;
+
 import queryless.core.bundle.model.Bundle;
 import queryless.core.source.model.Source;
-
-import java.util.List;
 
 public interface BundleService {
 

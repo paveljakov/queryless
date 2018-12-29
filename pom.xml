@@ -10,9 +10,9 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>queryless-plugin</module>
-        <module>queryless-tests</module>
         <module>queryless-core</module>
+        <module>queryless-plugin-maven</module>
+        <module>queryless-tests-maven</module>
     </modules>
 
     <properties>

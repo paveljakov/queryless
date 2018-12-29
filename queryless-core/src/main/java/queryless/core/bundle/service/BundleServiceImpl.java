@@ -1,15 +1,16 @@
 package queryless.core.bundle.service;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import queryless.core.bundle.model.Bundle;
 import queryless.core.bundle.model.Query;
 import queryless.core.source.model.Source;
 import queryless.core.source.splitter.SourceSplitters;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Singleton
 public class BundleServiceImpl implements BundleService {
