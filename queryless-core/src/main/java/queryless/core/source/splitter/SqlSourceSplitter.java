@@ -2,11 +2,11 @@ package queryless.core.source.splitter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
-import org.apache.commons.lang3.StringUtils;
 
 import queryless.core.bundle.model.Query;
 import queryless.core.config.PluginConfiguration;
@@ -17,11 +17,12 @@ import queryless.core.utils.QueryTextUtils;
 @Singleton
 public class SqlSourceSplitter implements SourceSplitter {
 
-    private final PluginConfiguration configuration;
+    private final Pattern keyMarkerRegex;
 
     @Inject
-    public SqlSourceSplitter(final PluginConfiguration configuration) {
-        this.configuration = configuration;
+    public SqlSourceSplitter(final PluginConfiguration cfg) {
+        keyMarkerRegex = Pattern.compile("^\\s*" + cfg.getQueryCommentPrefix() + "\\s+" + cfg.getQueryKeyMarker() + "\\s*([^\\s].*[^\\s])$",
+                                         Pattern.CASE_INSENSITIVE);
     }
 
     @Override
@@ -33,11 +34,12 @@ public class SqlSourceSplitter implements SourceSplitter {
 
         final List<String> lines = QueryTextUtils.splitLines(source.getContent());
         for (final String line : lines) {
-            if (isIdLine(line)) {
+            final Matcher matcher = keyMarkerRegex.matcher(line);
+            if (matcher.find()) {
                 if (queryId != null) {
                     queries.add(buildQuery(queryId, queryText.toString()));
                 }
-                queryId = extractKey(line);
+                queryId = matcher.group(1);
                 queryText = new StringBuilder();
 
             } else {
@@ -54,18 +56,6 @@ public class SqlSourceSplitter implements SourceSplitter {
 
     private Query buildQuery(final String id, final String text) {
         return new Query(id, QueryTextUtils.removeIndentation(text));
-    }
-
-    private String extractKey(final String line) {
-        final String leveledLine = StringUtils.upperCase(line);
-        final String keyPrefix = StringUtils.upperCase(configuration.getSqlKeyPrefix());
-
-        return StringUtils.trim(StringUtils.substringAfter(leveledLine, keyPrefix));
-    }
-
-    private boolean isIdLine(final String line) {
-        final String trimmed = StringUtils.trim(line);
-        return StringUtils.startsWith(trimmed, "--") && StringUtils.containsIgnoreCase(trimmed, configuration.getSqlKeyPrefix());
     }
 
     @Override

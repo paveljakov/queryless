@@ -3,7 +3,7 @@
 <properties>
     <comment>Employee Queries</comment>
 
-    <entry key="employee.insert-new">
+    <entry key="employee-insert-new">
         INSERT INTO
             EMPLOYEE(
                 ID,

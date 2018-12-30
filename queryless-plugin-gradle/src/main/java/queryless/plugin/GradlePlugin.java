@@ -64,7 +64,9 @@ public class GradlePlugin implements Plugin<Project> {
         final QuerylessExtension extension = project.getExtensions().getByType(QuerylessExtension.class);
 
         queryless.setSources(extension.getSources());
-        queryless.setSqlKeyPrefix(extension.getSqlKeyPrefix());
+        queryless.setQueryKeyMarker(extension.getQueryKeyMarker());
+        queryless.setQueryCommentPrefix(extension.getQueryCommentPrefix());
+        queryless.setNestedBundleSeparator(extension.getNestedBundleSeparator());
         queryless.setPackageName(extension.getPackageName());
         queryless.setGeneratePath(resolveGeneratePath(project, extension.getGeneratePath()));
 

@@ -20,13 +20,10 @@ import queryless.core.utils.QueryTextUtils;
 @Singleton
 public class CodeGeneratorImpl implements CodeGenerator {
 
-    private final SourceSplitters sourceSplitters;
-
     private final PluginConfiguration configuration;
 
     @Inject
-    public CodeGeneratorImpl(final SourceSplitters sourceSplitters, final PluginConfiguration configuration) {
-        this.sourceSplitters = sourceSplitters;
+    public CodeGeneratorImpl(final PluginConfiguration configuration) {
         this.configuration = configuration;
     }
 
