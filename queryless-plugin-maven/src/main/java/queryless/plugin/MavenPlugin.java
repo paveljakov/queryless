@@ -15,6 +15,7 @@ import org.apache.maven.project.MavenProject;
 
 import queryless.core.DaggerQuerylessPlugin;
 import queryless.core.QuerylessPlugin;
+import queryless.core.config.DefaultConfiguration;
 import queryless.core.config.PluginConfiguration;
 import queryless.core.logging.Log;
 import queryless.plugin.logging.MavenLog;
@@ -32,7 +33,7 @@ public class MavenPlugin extends AbstractMojo {
     private String[] sources;
 
     @Parameter(property = "queryless.package",
-               defaultValue = "queryless.generated")
+               defaultValue = DefaultConfiguration.DEFAULT_PACKAGE_NAME)
     private String packageName;
 
     @Parameter(defaultValue = "${project.build.directory}/generated-sources/queryless",
@@ -44,9 +45,17 @@ public class MavenPlugin extends AbstractMojo {
                defaultValue = "src/main/resources")
     private String resourcesPath;
 
-    @Parameter(property = "queryless.sqlKeyPrefix",
-               defaultValue = "id:")
-    private String sqlKeyPrefix;
+    @Parameter(property = "queryless.queryKeyMarker",
+               defaultValue = DefaultConfiguration.DEFAULT_QUERY_KEY_MARKER)
+    private String queryKeyMarker;
+
+    @Parameter(property = "queryless.queryCommentPrefix",
+               defaultValue = DefaultConfiguration.DEFAULT_QUERY_COMMENT_PREFIX)
+    private String queryCommentPrefix;
+
+    @Parameter(property = "queryless.nestedBundleSeparator",
+               defaultValue = DefaultConfiguration.DEFAULT_NESTED_BUNDLE_SEPARATOR)
+    private String nestedBundleSeparator;
 
     @Parameter(defaultValue = "${project.basedir}")
     private File root;
@@ -83,7 +92,9 @@ public class MavenPlugin extends AbstractMojo {
         return new PluginConfiguration(
                 packageName,
                 generatePath.toPath(),
-                sqlKeyPrefix);
+                queryCommentPrefix,
+                queryKeyMarker,
+                nestedBundleSeparator);
     }
 
     private Path getResourcesPath() {

@@ -9,6 +9,6 @@ public class Bundle {
 
     private final String name;
     private final List<Query> queries;
-    private List<Bundle> nested;
+    private final List<Bundle> nested;
 
 }

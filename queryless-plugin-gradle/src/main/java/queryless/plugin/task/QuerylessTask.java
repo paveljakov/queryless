@@ -29,7 +29,13 @@ public class QuerylessTask extends DefaultTask {
     private File generatePath;
 
     @Input
-    private String sqlKeyPrefix;
+    private String queryKeyMarker;
+
+    @Input
+    private String queryCommentPrefix;
+
+    @Input
+    private String nestedBundleSeparator;
 
     @InputFiles
     private FileCollection sources;
@@ -53,7 +59,9 @@ public class QuerylessTask extends DefaultTask {
         return new PluginConfiguration(
                 getPackageName(),
                 getProject().getBuildDir().toPath().resolve(getGeneratePath().toPath()),
-                getSqlKeyPrefix());
+                getQueryCommentPrefix(),
+                getQueryKeyMarker(),
+                getNestedBundleSeparator());
     }
 
     private Log buildLog() {
@@ -87,12 +95,28 @@ public class QuerylessTask extends DefaultTask {
         this.generatePath = generatePath;
     }
 
-    public String getSqlKeyPrefix() {
-        return sqlKeyPrefix;
+    public String getQueryKeyMarker() {
+        return queryKeyMarker;
     }
 
-    public void setSqlKeyPrefix(final String sqlKeyPrefix) {
-        this.sqlKeyPrefix = sqlKeyPrefix;
+    public void setQueryKeyMarker(final String queryKeyMarker) {
+        this.queryKeyMarker = queryKeyMarker;
+    }
+
+    public String getQueryCommentPrefix() {
+        return queryCommentPrefix;
+    }
+
+    public void setQueryCommentPrefix(final String queryCommentPrefix) {
+        this.queryCommentPrefix = queryCommentPrefix;
+    }
+
+    public String getNestedBundleSeparator() {
+        return nestedBundleSeparator;
+    }
+
+    public void setNestedBundleSeparator(final String nestedBundleSeparator) {
+        this.nestedBundleSeparator = nestedBundleSeparator;
     }
 
     public FileCollection getSources() {
