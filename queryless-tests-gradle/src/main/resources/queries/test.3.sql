@@ -1,4 +1,4 @@
--- id: employee-insert
+-- id: employee.insert
 INSERT INTO
     EMPLOYEE(
         ID,
@@ -13,7 +13,7 @@ VALUES(
     ?
 )
 
--- ID: employee-find
+-- ID: employee.find
 -- Finds employees by ID
 SELECT
     ID,

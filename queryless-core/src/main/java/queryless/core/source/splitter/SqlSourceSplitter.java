@@ -21,7 +21,9 @@ public class SqlSourceSplitter implements SourceSplitter {
 
     @Inject
     public SqlSourceSplitter(final PluginConfiguration cfg) {
-        keyMarkerRegex = Pattern.compile("^\\s*" + cfg.getQueryCommentPrefix() + "\\s+" + cfg.getQueryKeyMarker() + "\\s*([^\\s].*[^\\s])$",
+        final String queryCommentPrefix = Pattern.quote(cfg.getQueryCommentPrefix());
+        final String queryKeyMarker = Pattern.quote(cfg.getQueryKeyMarker());
+        keyMarkerRegex = Pattern.compile("^\\s*" + queryCommentPrefix + "\\s+" + queryKeyMarker + "\\s*([^\\s].*[^\\s])$",
                                          Pattern.CASE_INSENSITIVE);
     }
 

@@ -1,21 +1,18 @@
 package queryless.core.generator;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import com.squareup.javapoet.FieldSpec;
+import com.squareup.javapoet.JavaFile;
+import com.squareup.javapoet.TypeSpec;
+import queryless.core.bundle.model.Bundle;
+import queryless.core.bundle.model.Query;
+import queryless.core.config.PluginConfiguration;
+import queryless.core.utils.QueryTextUtils;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.lang.model.element.Modifier;
-
-import com.squareup.javapoet.FieldSpec;
-import com.squareup.javapoet.JavaFile;
-import com.squareup.javapoet.TypeSpec;
-
-import queryless.core.bundle.model.Bundle;
-import queryless.core.bundle.model.Query;
-import queryless.core.config.PluginConfiguration;
-import queryless.core.source.splitter.SourceSplitters;
-import queryless.core.utils.QueryTextUtils;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Singleton
 public class CodeGeneratorImpl implements CodeGenerator {
@@ -29,19 +26,28 @@ public class CodeGeneratorImpl implements CodeGenerator {
 
     @Override
     public JavaFile generate(final Bundle bundle) {
+        final TypeSpec javaClass = generateInternal(bundle, new Modifier[]{Modifier.PUBLIC});
+
+        return JavaFile.builder(configuration.getPackageName(), javaClass)
+                .build();
+    }
+
+    private TypeSpec generateInternal(final Bundle bundle, final Modifier[] modifiers) {
         final List<FieldSpec> constants = bundle.getQueries()
                 .stream()
                 .map(this::buildField)
                 .collect(Collectors.toList());
 
+        final List<TypeSpec> nestedClasses = bundle.getNested().stream()
+                .map(b -> generateInternal(b, new Modifier[]{Modifier.PUBLIC, Modifier.STATIC}))
+                .collect(Collectors.toList());
+
         final String className = QueryTextUtils.toClassName(bundle.getName());
 
-        final TypeSpec javaClass = TypeSpec.classBuilder(className)
-                .addModifiers(Modifier.PUBLIC)
+        return TypeSpec.classBuilder(className)
+                .addModifiers(modifiers)
                 .addFields(constants)
-                .build();
-
-        return JavaFile.builder(configuration.getPackageName(), javaClass)
+                .addTypes(nestedClasses)
                 .build();
     }
 
