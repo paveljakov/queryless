@@ -115,6 +115,40 @@
                         <target>1.8</target>
                     </configuration>
                 </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>license-maven-plugin</artifactId>
+                    <version>1.16</version>
+                    <configuration>
+                        <verbose>false</verbose>
+                        <addSvnKeyWords>false</addSvnKeyWords>
+                        <useJavaNoReformatCommentStartTag>false</useJavaNoReformatCommentStartTag>
+                        <addJavaLicenseAfterPackage>false</addJavaLicenseAfterPackage>
+                        <processStartTag>==============================LICENSE_START=============================</processStartTag>
+                        <sectionDelimiter>========================================================================</sectionDelimiter>
+                        <processEndTag>===============================LICENSE_END==============================</processEndTag>
+                        <organizationName>Pavel Jakovlev</organizationName>
+                        <projectName>Queryless (query constants generation)</projectName>
+                        <inceptionYear>2018</inceptionYear>
+                        <licenseName>apache_v2</licenseName>
+                        <roots>
+                            <root>src/main/java/</root>
+                            <root>src/test/java/</root>
+                        </roots>
+                        <includes>
+                            <include>**/*.java</include>
+                        </includes>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>update-license-headers</id>
+                            <goals>
+                                <goal>update-file-header</goal>
+                            </goals>
+                            <phase>process-sources</phase>
+                        </execution>
+                    </executions>
+                </plugin>
             </plugins>
         </pluginManagement>
     </build>

@@ -1,7 +1,10 @@
+import java.util.Calendar
+
 plugins {
     `java-gradle-plugin`
     `maven-publish`
     idea
+    id("com.github.hierynomus.license") version("0.15.0")
 }
 
 group = "queryless"
@@ -28,4 +31,12 @@ gradlePlugin {
             implementationClass = "queryless.plugin.GradlePlugin"
         }
     }
+}
+
+license {
+    include("**/*.java")
+    mapping("java", "SLASHSTAR_STYLE")
+    header = rootProject.file("HEADER")
+    strictCheck = true
+    ext["year"] = Calendar.getInstance().get(Calendar.YEAR)
 }

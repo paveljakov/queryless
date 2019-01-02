@@ -1,9 +1,11 @@
+import java.util.Calendar
 import queryless.plugin.extension.QuerylessExtension
 
 plugins {
     java
     idea
     eclipse
+    id("com.github.hierynomus.license") version("0.15.0")
     id("queryless.plugin") version("1.0.0-SNAPSHOT")
 }
 
@@ -23,6 +25,16 @@ configure<JavaPluginConvention> {
     sourceCompatibility = JavaVersion.VERSION_1_8
 }
 
+license {
+    include("**/*.java")
+    mapping("java", "SLASHSTAR_STYLE")
+    header = rootProject.file("HEADER")
+    strictCheck = true
+    ext["year"] = Calendar.getInstance().get(Calendar.YEAR)
+}
+
 configure<QuerylessExtension> {
-    sources = fileTree("src/main/resources").matching { include("**/*.*") }
+    sources = fileTree("src/main/resources").matching {
+        include("**/*.*")
+    }
 }
