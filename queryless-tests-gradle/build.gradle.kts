@@ -27,6 +27,7 @@ configure<JavaPluginConvention> {
 
 license {
     include("**/*.java")
+    exclude("**/generated/**")
     mapping("java", "SLASHSTAR_STYLE")
     header = rootProject.file("HEADER")
     strictCheck = true
