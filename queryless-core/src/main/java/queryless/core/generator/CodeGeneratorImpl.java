@@ -33,6 +33,7 @@ import org.apache.commons.text.WordUtils;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
+import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 
 import queryless.core.bundle.model.Bundle;
@@ -53,7 +54,7 @@ public class CodeGeneratorImpl implements CodeGenerator {
 
     @Override
     public JavaFile generate(final Bundle bundle) {
-        final TypeSpec javaClass = generateClass(bundle, Modifier.PUBLIC);
+        final TypeSpec javaClass = generateClass(bundle, Modifier.PUBLIC, Modifier.FINAL);
 
         return JavaFile.builder(configuration.getPackageName(), javaClass)
                 .addFileComment(GENERATED_COMMENT)
@@ -67,7 +68,7 @@ public class CodeGeneratorImpl implements CodeGenerator {
                 .collect(Collectors.toList());
 
         final List<TypeSpec> nestedClasses = bundle.getNested().stream()
-                .map(b -> generateClass(b, Modifier.PUBLIC, Modifier.STATIC))
+                .map(b -> generateClass(b, Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL))
                 .collect(Collectors.toList());
 
         final String className = QueryTextUtils.toClassName(bundle.getName());
@@ -83,6 +84,7 @@ public class CodeGeneratorImpl implements CodeGenerator {
                 .addModifiers(modifiers)
                 .addFields(constants)
                 .addTypes(nestedClasses)
+                .addMethod(MethodSpec.constructorBuilder().addModifiers(Modifier.PRIVATE).build())
                 .build();
     }
 
