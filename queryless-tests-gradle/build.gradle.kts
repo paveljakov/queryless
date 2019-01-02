@@ -2,6 +2,8 @@ import queryless.plugin.extension.QuerylessExtension
 
 plugins {
     java
+    idea
+    eclipse
     id("queryless.plugin") version("1.0.0-SNAPSHOT")
 }
 

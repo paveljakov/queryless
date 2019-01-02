@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Set;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -65,6 +66,12 @@ public class MavenPlugin extends AbstractMojo {
 
     public void execute() throws MojoExecutionException {
         try {
+            project.addCompileSourceRoot(generatePath.toString());
+
+            if (ArrayUtils.isEmpty(sources)) {
+                return;
+            }
+
             final QuerylessPlugin plugin = DaggerQuerylessPlugin
                     .builder()
                     .logger(buildLog())
@@ -74,9 +81,6 @@ public class MavenPlugin extends AbstractMojo {
             final Set<Path> sourcePaths = SourcesResolver.resolve(sources, getResourcesPath());
 
             plugin.executor().execute(sourcePaths);
-
-            project.addCompileSourceRoot(generatePath.toString());
-            project.addTestCompileSourceRoot(generatePath.toString());
 
         } catch (IOException e) {
             getLog().error(e);

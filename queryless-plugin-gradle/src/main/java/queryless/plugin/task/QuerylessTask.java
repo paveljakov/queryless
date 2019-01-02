@@ -2,6 +2,7 @@ package queryless.plugin.task;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Set;
@@ -42,6 +43,8 @@ public class QuerylessTask extends DefaultTask {
 
     @TaskAction
     void generate() throws IOException {
+        Files.createDirectories(generatePath.toPath());
+
         if (sources == null) {
             return;
         }

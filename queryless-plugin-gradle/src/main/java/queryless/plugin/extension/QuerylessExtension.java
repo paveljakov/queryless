@@ -1,6 +1,8 @@
 package queryless.plugin.extension;
 
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.apache.commons.lang3.StringUtils;
 import org.gradle.api.Project;
@@ -39,7 +41,9 @@ public class QuerylessExtension {
     }
 
     public File getGeneratePath() {
-        return generatePath == null ? new File(DEFAULT_GENERATE_PATH) : generatePath;
+        final Path buildDir = project.getBuildDir().toPath();
+        final Path generateDir = generatePath == null ? Paths.get(DEFAULT_GENERATE_PATH) : generatePath.toPath();
+        return buildDir.resolve(generateDir).toFile();
     }
 
     public String getQueryKeyMarker() {

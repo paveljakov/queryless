@@ -1,6 +1,7 @@
 plugins {
     `java-gradle-plugin`
     `maven-publish`
+    idea
 }
 
 group = "queryless"
