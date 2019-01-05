@@ -125,9 +125,8 @@ jdbcTemplate.queryForObject(Queries.EMPLOYEE_FIND, params, Employee.class);
 ```
 And in Intellij or Eclipse (or STS) IDE it would look like this:
 
-![IDEA](/resources/example-idea.png?raw=true "Intellij IDEA")
-
-![Eclipse](/resources/example-eclipse.png?raw=true "Eclipse IDE")
+<img src="/resources/example-idea.png?raw=true" alt="Intellij IDEA" width="65%" height="65%">
+<img src="/resources/example-eclipse.png?raw=true" alt="Eclipse IDE" width="65%" height="65%">
 
 ## Usage & Configuration
 todo
