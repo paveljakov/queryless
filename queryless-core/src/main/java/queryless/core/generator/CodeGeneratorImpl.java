@@ -39,7 +39,7 @@ import com.squareup.javapoet.TypeSpec;
 import queryless.core.bundle.model.Bundle;
 import queryless.core.bundle.model.Query;
 import queryless.core.config.PluginConfiguration;
-import queryless.core.utils.QueryTextUtils;
+import queryless.core.utils.NamingUtils;
 
 @Singleton
 public class CodeGeneratorImpl implements CodeGenerator {
@@ -71,7 +71,7 @@ public class CodeGeneratorImpl implements CodeGenerator {
                 .map(b -> generateClass(b, Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL))
                 .collect(Collectors.toList());
 
-        final String className = QueryTextUtils.toClassName(bundle.getName());
+        final String className = NamingUtils.toClassName(bundle.getName());
 
         final AnnotationSpec generated = AnnotationSpec.builder(resolveGeneratedAnnotation())
                 .addMember("value", "$S", GENERATED_COMMENT)
@@ -89,7 +89,7 @@ public class CodeGeneratorImpl implements CodeGenerator {
     }
 
     private FieldSpec buildField(final Query query) {
-        return FieldSpec.builder(String.class, QueryTextUtils.toConstantName(query.getId()))
+        return FieldSpec.builder(String.class, NamingUtils.toConstantName(query.getId()))
                 .addJavadoc("<h2>Query text:</h2><pre>{@code $L}</pre>\n", query.getText())
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
                 .initializer("$S", query.getText())
