@@ -64,7 +64,7 @@ Using simple Maven plugin configuration:
     </executions>
 </plugin>
 ```
-Or using simple Gradle plugin configuration:
+Or simple Gradle plugin configuration:
 ```kotlin
 plugins {
     id("queryless.plugin") version("1.0.0-SNAPSHOT")
@@ -123,6 +123,12 @@ This class could be used like this:
 ```java
 jdbcTemplate.queryForObject(Queries.EMPLOYEE_FIND, params, Employee.class);
 ```
+And in Intellij or Eclipse (or STS) IDE it would look like this:
+
+![IDEA](/resources/example-idea.png?raw=true "Intellij IDEA")
+
+![Eclipse](/resources/example-eclipse.png?raw=true "Eclipse IDE")
+
 ## Usage & Configuration
 todo
 
