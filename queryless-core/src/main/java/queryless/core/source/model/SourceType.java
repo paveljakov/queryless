@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,15 +19,16 @@
  */
 package queryless.core.source.model;
 
-import java.util.Arrays;
-
 import lombok.Getter;
+
+import java.util.EnumSet;
 
 @Getter
 public enum SourceType {
     SQL("sql"),
     XML("xml"),
-    PROPERTIES("properties");
+    PROPERTIES("properties"),
+    OTHER(null);
 
     private final String extension;
 
@@ -36,10 +37,11 @@ public enum SourceType {
     }
 
     public static SourceType resolve(final String extension) {
-        return Arrays.stream(values())
+        return EnumSet.complementOf(EnumSet.of(OTHER))
+                .stream()
                 .filter(type -> type.getExtension().equalsIgnoreCase(extension))
                 .findAny()
-                .orElse(null);
+                .orElse(OTHER);
     }
 
 }

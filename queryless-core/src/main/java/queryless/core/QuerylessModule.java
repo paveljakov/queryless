@@ -20,7 +20,6 @@
 package queryless.core;
 
 import com.squareup.javapoet.JavaFile;
-
 import dagger.Binds;
 import dagger.Module;
 import dagger.multibindings.IntoSet;
@@ -32,10 +31,7 @@ import queryless.core.generator.CodeGenerator;
 import queryless.core.generator.CodeGeneratorImpl;
 import queryless.core.source.loader.SourcesLoader;
 import queryless.core.source.loader.SourcesLoaderImpl;
-import queryless.core.source.splitter.PropertiesSourceSplitter;
-import queryless.core.source.splitter.PropertiesXmlSourceSplitter;
-import queryless.core.source.splitter.SourceSplitter;
-import queryless.core.source.splitter.SqlSourceSplitter;
+import queryless.core.source.splitter.*;
 
 @Module
 abstract class QuerylessModule {
@@ -51,6 +47,10 @@ abstract class QuerylessModule {
     @Binds
     @IntoSet
     abstract SourceSplitter provideSqlSourceSplitter(SqlSourceSplitter splitter);
+
+    @Binds
+    @IntoSet
+    abstract SourceSplitter provideGenericSourceSplitter(GenericSourceSplitter splitter);
 
     @Binds
     abstract BundleService provideBundleService(BundleServiceImpl bundleService);

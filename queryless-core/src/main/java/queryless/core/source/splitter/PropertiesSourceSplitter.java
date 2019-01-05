@@ -19,29 +19,29 @@
  */
 package queryless.core.source.splitter;
 
+import queryless.core.bundle.model.Query;
+import queryless.core.logging.Log;
+import queryless.core.source.model.Source;
+import queryless.core.source.model.SourceType;
+import queryless.core.utils.QueryTextUtils;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
-import org.apache.commons.io.IOUtils;
-
-import queryless.core.bundle.model.Query;
-import queryless.core.source.model.Source;
-import queryless.core.source.model.SourceType;
-import queryless.core.utils.QueryTextUtils;
-
 @Singleton
 public class PropertiesSourceSplitter implements SourceSplitter {
 
+    private final Log log;
+
     @Inject
-    public PropertiesSourceSplitter() {
+    public PropertiesSourceSplitter(final Log log) {
+        this.log = log;
     }
 
     @Override
@@ -59,14 +59,15 @@ public class PropertiesSourceSplitter implements SourceSplitter {
     }
 
     private Properties loadProperties(final Source source) {
-        try (final InputStream stream = IOUtils.toInputStream(source.getContent(), StandardCharsets.UTF_8)) {
+        try (final InputStream stream = source.getContentStream()) {
             final Properties properties = new Properties();
             properties.load(stream);
 
             return properties;
 
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            log.warn("Error occurred while reading source file " + source.getPath() + ": " + e.getMessage());
+            return new Properties();
         }
     }
 
