@@ -64,13 +64,13 @@ Using simple Maven plugin configuration:
     </executions>
 </plugin>
 ```
-Or simple Gradle plugin configuration:
+Or simple Gradle plugin configuration (kotlin):
 ```kotlin
 plugins {
-    id("queryless.plugin") version("1.0.0-SNAPSHOT")
+    id("queryless.plugin") version("${queryless.version}")
 }
 
-configure<QuerylessExtension> {
+queryless {
     sources = fileTree("src/main/resources/queries").matching {
         include("**/*.sql")
     }
@@ -128,7 +128,80 @@ And in Intellij or Eclipse (or STS) IDE it would look like this:
 <img src="/resources/example-idea.png?raw=true" alt="Intellij IDEA" width="65%" height="65%">
 <img src="/resources/example-eclipse.png?raw=true" alt="Eclipse IDE" width="65%" height="65%">
 
-## Usage & Configuration
+## Basic usage
+To use Queryless Maven/Gradle plugin you just need to add plugin declaration to your build script and configure source query files location(s).
+
+### Maven plugin
+```xml
+<plugin>
+    <groupId>queryless</groupId>
+    <artifactId>queryless-plugin-maven</artifactId>
+    <version>${queryless.version}</version>
+    <executions>
+        <execution>
+            <goals>
+                <goal>generate</goal>
+            </goals>
+            <phase>generate-sources</phase>
+        </execution>
+    </executions>
+</plugin>
+```
+
+### Gradle plugin
+Kotlin:
+```kotlin
+plugins {
+    id("queryless.plugin") version("${queryless.version}")
+}
+```
+Groovy:
+```groovy
+plugins {
+    id 'queryless.plugin' version '${queryless.version}'
+}
+```
+
+### Basic configuration
+Minimal configuration plugin needs is query source files location(s) configuration.
+
+#### Maven configuration
+```xml
+<configuration>
+    <sources>
+        <param>queries</param>
+    </sources>
+</configuration>
+```
+
+#### Gradle configuration
+Kotlin:
+```kotlin
+queryless {
+    sources = fileTree("src/main/resources").matching {
+        include("**/*.sql")
+    }
+}
+```
+Groovy:
+```groovy
+queryless {
+    sources = fileTree('src/main/resources') {
+        include '**/*.sql'
+    }
+}
+```
+
+## Advanced usage
+todo
+
+### Query bundles
+todo
+
+#### Nested query bundles
+todo
+
+### Advanced configuration
 todo
 
 ## Considerations
