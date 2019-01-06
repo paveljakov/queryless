@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,47 +19,55 @@
  */
 package queryless.plugin.source;
 
+import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.PathMatcher;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import org.apache.commons.io.FileUtils;
 
 public final class SourcesResolver {
 
     public static Set<Path> resolve(final String[] sources, final Path resourcesPath) {
         return Arrays.stream(sources)
-                .map(resourcesPath::resolve)
-                .map(SourcesResolver::resolveFiles)
+                .map(source -> resolveFiles(resourcesPath, source))
                 .flatMap(Collection::stream)
-                .map(Path::normalize)
                 .collect(Collectors.toSet());
     }
 
-    private static Set<Path> resolveFiles(final Path sourcePath) {
-        if (Files.isDirectory(sourcePath)) {
-            return collectDirectoryFiles(sourcePath);
+    private static Set<Path> resolveFiles(final Path resourcesPath, final String source) {
+        final Set<Path> files = new HashSet<>();
+
+        try {
+            final PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:" + source);
+
+            Files.walkFileTree(resourcesPath, new SimpleFileVisitor<Path>() {
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
+                    if (matcher.matches(file)) {
+                        files.add(file);
+                    }
+                    return FileVisitResult.CONTINUE;
+                }
+
+                @Override
+                public FileVisitResult visitFileFailed(Path file, IOException exc) {
+                    return FileVisitResult.CONTINUE;
+                }
+            });
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
 
-        if (Files.isRegularFile(sourcePath)) {
-            return Collections.singleton(sourcePath);
-        }
-
-        return Collections.emptySet();
-    }
-
-    private static Set<Path> collectDirectoryFiles(final Path directory) {
-        final Set<Path> paths = new HashSet<>();
-
-        FileUtils.listFiles(directory.toFile(), null, true)
-                .forEach(file -> paths.add(file.toPath()));
-
-        return paths;
+        return files;
     }
 
     private SourcesResolver() {
