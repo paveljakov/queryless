@@ -101,7 +101,7 @@ public class MavenPlugin extends AbstractMojo {
 
             plugin.executor().execute(sourcePaths);
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             getLog().error(e);
             throw new MojoExecutionException(e.getMessage(), e);
         }
