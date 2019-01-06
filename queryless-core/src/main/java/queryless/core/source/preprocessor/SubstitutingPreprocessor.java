@@ -17,59 +17,58 @@
  * limitations under the License.
  * ===============================LICENSE_END==============================
  */
-package queryless.core.source.splitter;
+package queryless.core.source.preprocessor;
 
-import queryless.core.bundle.model.Query;
+import org.apache.commons.text.StringSubstitutor;
+import queryless.core.config.PluginConfiguration;
 import queryless.core.logging.Log;
-import queryless.core.source.model.Source;
-import queryless.core.source.model.SourceType;
 import queryless.core.utils.PropertiesUtils;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.IOException;
-import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
 
 @Singleton
-public class PropertiesSourceSplitter implements SourceSplitter {
+public class SubstitutingPreprocessor implements Preprocessor {
 
     private final Log log;
 
+    private final StringSubstitutor substitutor;
+
     @Inject
-    public PropertiesSourceSplitter(final Log log) {
+    public SubstitutingPreprocessor(final PluginConfiguration configuration, final Log log) {
         this.log = log;
+
+        final Map<String, String> variables = new HashMap<>();
+
+        if (configuration.getVariables() != null) {
+            variables.putAll(configuration.getVariables());
+        }
+
+        if (configuration.getVariablePaths() != null) {
+            configuration.getVariablePaths().stream()
+                    .map(this::loadProperties)
+                    .forEach(variables::putAll);
+        }
+
+        substitutor = new StringSubstitutor(variables);
     }
 
     @Override
-    public List<Query> split(final Source source) {
-        return loadProperties(source).entrySet()
-                .stream()
-                .map(this::buildQuery)
-                .collect(Collectors.toList());
+    public String preprocess(final String query) {
+        return substitutor.replace(query);
     }
 
-    @Override
-    public SourceType supports() {
-        return SourceType.PROPERTIES;
-    }
-
-    private Map<String, String> loadProperties(final Source source) {
-        try (final InputStream stream = source.getContentStream()) {
-            return PropertiesUtils.loadProperties(stream);
-
+    private Map<String, String> loadProperties(final Path path) {
+        try {
+            return PropertiesUtils.loadProperties(path);
         } catch (IOException e) {
-            log.warn("Error occurred while reading source file " + source.getPath() + ": " + e.getMessage());
+            log.warn("Error occurred while loading properties file " + path + ": " + e.getMessage());
             return new HashMap<>();
         }
-    }
-
-    private Query buildQuery(final Entry<String, String> entry) {
-        return new Query(entry.getKey(), entry.getValue());
     }
 
 }

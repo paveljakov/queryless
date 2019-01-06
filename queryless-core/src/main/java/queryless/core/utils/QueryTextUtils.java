@@ -49,6 +49,10 @@ public final class QueryTextUtils {
 
         final int indentWidth = findMinimumCommonIndent(lines);
 
+        if (indentWidth == 0) {
+            return text;
+        }
+
         return lines.stream()
                 .map(line -> StringUtils.substring(line, indentWidth))
                 .collect(Collectors.joining("\n"));

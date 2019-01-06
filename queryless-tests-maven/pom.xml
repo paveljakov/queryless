@@ -42,10 +42,14 @@
                         </goals>
                         <phase>generate-sources</phase>
                         <configuration>
+                            <resourcesPath>src/main/resources</resourcesPath>
                             <sources>
                                 <param>queries/*.{xml,sql}</param>
                                 <param>queries/**/*.{xml,sql}</param>
                             </sources>
+                            <variables>
+                                <test.table.name>EMPLOYEE</test.table.name>
+                            </variables>
                         </configuration>
                     </execution>
                 </executions>

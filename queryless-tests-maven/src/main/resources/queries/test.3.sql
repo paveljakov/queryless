@@ -21,7 +21,7 @@ SELECT
     AGE,
     DEPARTMENT
 FROM
-    EMPLOYEE
+    ${test.table.name}
 WHERE
     ID = :id
 

@@ -23,15 +23,16 @@ import queryless.core.bundle.model.Query;
 import queryless.core.logging.Log;
 import queryless.core.source.model.Source;
 import queryless.core.source.model.SourceType;
-import queryless.core.utils.QueryTextUtils;
+import queryless.core.utils.PropertiesUtils;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 @Singleton
@@ -46,8 +47,7 @@ public class PropertiesXmlSourceSplitter implements SourceSplitter {
 
     @Override
     public List<Query> split(final Source source) {
-        final Properties properties = loadProperties(source);
-        return properties.entrySet()
+        return loadProperties(source).entrySet()
                 .stream()
                 .map(this::buildQuery)
                 .collect(Collectors.toList());
@@ -58,21 +58,18 @@ public class PropertiesXmlSourceSplitter implements SourceSplitter {
         return SourceType.XML;
     }
 
-    private Properties loadProperties(final Source source) {
+    private Map<String, String> loadProperties(final Source source) {
         try (final InputStream stream = source.getContentStream()) {
-            final Properties properties = new Properties();
-            properties.loadFromXML(stream);
-
-            return properties;
+            return PropertiesUtils.loadXmlProperties(stream);
 
         } catch (IOException e) {
             log.warn("Error occurred while reading source file " + source.getPath() + ": " + e.getMessage());
-            return new Properties();
+            return new HashMap<>();
         }
     }
 
-    private Query buildQuery(final Map.Entry<Object, Object> entry) {
-        return new Query(entry.getKey().toString(), QueryTextUtils.removeIndentation(entry.getValue().toString()));
+    private Query buildQuery(final Entry<String, String> entry) {
+        return new Query(entry.getKey(), entry.getValue());
     }
 
 }

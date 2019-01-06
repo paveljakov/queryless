@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -57,6 +58,12 @@ public class QuerylessTask extends DefaultTask {
     @Input
     private String nestedBundleSeparator;
 
+    @Input
+    private Map<String, String> variables;
+
+    @InputFiles
+    private FileCollection variablePaths;
+
     @InputFiles
     private FileCollection sources;
 
@@ -74,7 +81,7 @@ public class QuerylessTask extends DefaultTask {
                 .configuration(buildConfiguration())
                 .build();
 
-        plugin.executor().execute(resolveSources(sources));
+        plugin.executor().execute(resolvePaths(sources));
     }
 
     private PluginConfiguration buildConfiguration() {
@@ -83,14 +90,16 @@ public class QuerylessTask extends DefaultTask {
                 getProject().getBuildDir().toPath().resolve(getGeneratePath().toPath()),
                 getQueryCommentPrefix(),
                 getQueryKeyMarker(),
-                getNestedBundleSeparator());
+                getNestedBundleSeparator(),
+                getVariables(),
+                resolvePaths(getVariablePaths()));
     }
 
     private Log buildLog() {
         return new GradleLog(getProject().getLogger());
     }
 
-    private Set<Path> resolveSources(final FileCollection files) {
+    private Set<Path> resolvePaths(final FileCollection files) {
         if (files == null) {
             return Collections.emptySet();
         }
@@ -139,6 +148,22 @@ public class QuerylessTask extends DefaultTask {
 
     public void setNestedBundleSeparator(final String nestedBundleSeparator) {
         this.nestedBundleSeparator = nestedBundleSeparator;
+    }
+
+    public Map<String, String> getVariables() {
+        return variables;
+    }
+
+    public void setVariables(final Map<String, String> variables) {
+        this.variables = variables;
+    }
+
+    public FileCollection getVariablePaths() {
+        return variablePaths;
+    }
+
+    public void setVariablePaths(final FileCollection variablePaths) {
+        this.variablePaths = variablePaths;
     }
 
     public FileCollection getSources() {
