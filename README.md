@@ -57,7 +57,7 @@ Using simple Maven plugin configuration:
             <phase>generate-sources</phase>
             <configuration>
                 <sources>
-                    <param>queries</param>
+                    <param>queries/*.sql</param>
                 </sources>
             </configuration>
         </execution>
@@ -169,7 +169,7 @@ Minimal configuration plugin needs is query source files location(s) configurati
 ```xml
 <configuration>
     <sources>
-        <param>queries</param>
+        <param>**/*.sql</param>
     </sources>
 </configuration>
 ```
