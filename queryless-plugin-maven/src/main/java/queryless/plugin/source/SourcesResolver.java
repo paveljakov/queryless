@@ -51,7 +51,8 @@ public final class SourcesResolver {
             Files.walkFileTree(resourcesPath, new SimpleFileVisitor<Path>() {
                 @Override
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
-                    if (matcher.matches(file)) {
+                    final Path relative = resourcesPath.relativize(file);
+                    if (matcher.matches(relative)) {
                         files.add(file);
                     }
                     return FileVisitResult.CONTINUE;

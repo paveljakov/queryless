@@ -43,7 +43,8 @@
                         <phase>generate-sources</phase>
                         <configuration>
                             <sources>
-                                <param>**/*.{xml,sql}</param>
+                                <param>queries/*.{xml,sql}</param>
+                                <param>queries/**/*.{xml,sql}</param>
                             </sources>
                         </configuration>
                     </execution>
