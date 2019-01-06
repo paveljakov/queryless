@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,11 +19,6 @@
  */
 package queryless.plugin;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.Set;
-
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -32,7 +27,6 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
-
 import queryless.core.DaggerQuerylessPlugin;
 import queryless.core.QuerylessPlugin;
 import queryless.core.config.DefaultConfiguration;
@@ -41,41 +35,53 @@ import queryless.core.logging.Log;
 import queryless.plugin.logging.MavenLog;
 import queryless.plugin.source.SourcesResolver;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 @Mojo(name = "generate",
-      defaultPhase = LifecyclePhase.GENERATE_SOURCES,
-      requiresDependencyResolution = ResolutionScope.COMPILE,
-      requiresDependencyCollection = ResolutionScope.COMPILE,
-      threadSafe = true)
+        defaultPhase = LifecyclePhase.GENERATE_SOURCES,
+        requiresDependencyResolution = ResolutionScope.COMPILE,
+        requiresDependencyCollection = ResolutionScope.COMPILE,
+        threadSafe = true)
 public class MavenPlugin extends AbstractMojo {
 
     @Parameter(property = "queryless.sources",
-               required = true)
+            required = true)
     private String[] sources;
 
     @Parameter(property = "queryless.package",
-               defaultValue = DefaultConfiguration.DEFAULT_PACKAGE_NAME)
+            defaultValue = DefaultConfiguration.DEFAULT_PACKAGE_NAME)
     private String packageName;
 
     @Parameter(defaultValue = "${project.build.directory}/generated-sources/queryless",
-               property = "queryless.generatePath",
-               required = true)
+            property = "queryless.generatePath",
+            required = true)
     private File generatePath;
 
     @Parameter(property = "queryless.resourcesPath",
-               defaultValue = "src/main/resources")
+            defaultValue = "src/main/resources")
     private String resourcesPath;
 
     @Parameter(property = "queryless.queryKeyMarker",
-               defaultValue = DefaultConfiguration.DEFAULT_QUERY_KEY_MARKER)
+            defaultValue = DefaultConfiguration.DEFAULT_QUERY_KEY_MARKER)
     private String queryKeyMarker;
 
     @Parameter(property = "queryless.queryCommentPrefix",
-               defaultValue = DefaultConfiguration.DEFAULT_QUERY_COMMENT_PREFIX)
+            defaultValue = DefaultConfiguration.DEFAULT_QUERY_COMMENT_PREFIX)
     private String queryCommentPrefix;
 
     @Parameter(property = "queryless.nestedBundleSeparator",
-               defaultValue = DefaultConfiguration.DEFAULT_NESTED_BUNDLE_SEPARATOR)
+            defaultValue = DefaultConfiguration.DEFAULT_NESTED_BUNDLE_SEPARATOR)
     private String nestedBundleSeparator;
+
+    @Parameter(property = "queryless.variables")
+    private Map<String, String> variables;
+
+    @Parameter(property = "queryless.variablePaths")
+    private Set<File> variablePaths;
 
     @Parameter(defaultValue = "${project.basedir}")
     private File root;
@@ -117,7 +123,11 @@ public class MavenPlugin extends AbstractMojo {
                 generatePath.toPath(),
                 queryCommentPrefix,
                 queryKeyMarker,
-                nestedBundleSeparator);
+                nestedBundleSeparator,
+                variables,
+                variablePaths.stream()
+                        .map(File::toPath)
+                        .collect(Collectors.toSet()));
     }
 
     private Path getResourcesPath() {

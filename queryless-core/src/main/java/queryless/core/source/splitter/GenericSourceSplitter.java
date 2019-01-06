@@ -25,7 +25,6 @@ import queryless.core.config.PluginConfiguration;
 import queryless.core.logging.Log;
 import queryless.core.source.model.Source;
 import queryless.core.source.model.SourceType;
-import queryless.core.utils.QueryTextUtils;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -86,7 +85,7 @@ public class GenericSourceSplitter implements SourceSplitter {
     }
 
     private Query buildQuery(final String id, final String text) {
-        return new Query(id, QueryTextUtils.removeIndentation(text));
+        return new Query(id, text);
     }
 
     @Override

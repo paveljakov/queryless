@@ -83,6 +83,8 @@ public class GradlePlugin implements Plugin<Project> {
         queryless.setNestedBundleSeparator(extension.getNestedBundleSeparator());
         queryless.setPackageName(extension.getPackageName());
         queryless.setGeneratePath(extension.getGeneratePath());
+        queryless.setVariables(extension.getVariables());
+        queryless.setVariablePaths(extension.getVariablePaths());
 
         project.getPlugins().withType(JavaPlugin.class, javaPlugin -> configureJavaPlugin(project, queryless, extension));
     }

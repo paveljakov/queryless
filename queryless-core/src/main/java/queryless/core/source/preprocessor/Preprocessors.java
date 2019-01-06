@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,26 +17,32 @@
  * limitations under the License.
  * ===============================LICENSE_END==============================
  */
-package queryless.core.config;
+package queryless.core.source.preprocessor;
 
-import java.nio.file.Path;
-import java.util.Map;
+import queryless.core.bundle.model.Query;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.util.Set;
 
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.Setter;
+@Singleton
+public class Preprocessors {
 
-@Data
-@Setter(AccessLevel.NONE)
-public class PluginConfiguration {
+    private final Set<Preprocessor> preprocessors;
 
-    private final String packageName;
-    private final Path generatePath;
-    private final String queryCommentPrefix;
-    private final String queryKeyMarker;
-    private final String nestedBundleSeparator;
-    private final Map<String, String> variables;
-    private final Set<Path> variablePaths;
+    @Inject
+    public Preprocessors(final Set<Preprocessor> preprocessors) {
+        this.preprocessors = preprocessors;
+    }
+
+    public Query preprocess(final Query query) {
+        String preprocessed = query.getText();
+
+        for (Preprocessor preprocessor : preprocessors) {
+            preprocessed = preprocessor.preprocess(preprocessed);
+        }
+
+        return new Query(query.getId(), preprocessed);
+    }
 
 }

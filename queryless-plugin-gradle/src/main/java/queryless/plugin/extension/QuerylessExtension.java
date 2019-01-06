@@ -22,6 +22,8 @@ package queryless.plugin.extension;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.gradle.api.Project;
@@ -42,6 +44,9 @@ public class QuerylessExtension {
     private String queryKeyMarker;
     private String queryCommentPrefix;
     private String nestedBundleSeparator;
+
+    private Map<String, String> variables;
+    private FileCollection variablePaths;
 
     private FileCollection sources;
 
@@ -77,6 +82,14 @@ public class QuerylessExtension {
         return StringUtils.isBlank(nestedBundleSeparator) ? DefaultConfiguration.DEFAULT_NESTED_BUNDLE_SEPARATOR : nestedBundleSeparator;
     }
 
+    public Map<String, String> getVariables() {
+        return variables == null ? new HashMap<>() : variables;
+    }
+
+    public FileCollection getVariablePaths() {
+        return variablePaths == null ? project.files() : variablePaths;
+    }
+
     public FileCollection getSources() {
         return sources;
     }
@@ -105,7 +118,15 @@ public class QuerylessExtension {
         this.nestedBundleSeparator = nestedBundleSeparator;
     }
 
+    public void setVariables(final Map<String, String> variables) {
+        this.variables = variables;
+    }
+
     public void setSources(final FileCollection sources) {
         this.sources = sources;
+    }
+
+    public void setVariablePaths(final FileCollection variablePaths) {
+        this.variablePaths = variablePaths;
     }
 }

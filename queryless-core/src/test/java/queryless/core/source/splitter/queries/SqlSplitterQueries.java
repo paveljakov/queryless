@@ -35,7 +35,7 @@ public class SqlSplitterQueries {
             + "    ?,\n"
             + "    ?,\n"
             + "    ?\n"
-            + ")");
+            + ")\n\n");
 
     public static final Query EMPLOYEE_FIND = new Query("employee.find", "-- Finds employees by ID\n"
             + "SELECT\n"
@@ -46,7 +46,7 @@ public class SqlSplitterQueries {
             + "FROM\n"
             + "    EMPLOYEE\n"
             + "WHERE\n"
-            + "    ID = :id");
+            + "    ID = :id\n\n");
 
     public static final Query GET_ALL_EMPLOYEES = new Query("get all employees", "SELECT\n"
             + "    ID,\n"
@@ -54,5 +54,5 @@ public class SqlSplitterQueries {
             + "    AGE,\n"
             + "    DEPARTMENT\n"
             + "FROM\n"
-            + "    EMPLOYEE");
+            + "    EMPLOYEE\n");
 }
