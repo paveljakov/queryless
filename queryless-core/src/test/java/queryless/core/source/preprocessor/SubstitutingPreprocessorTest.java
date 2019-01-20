@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,7 +17,7 @@
  * limitations under the License.
  * ===============================LICENSE_END==============================
  */
-package queryless.core.source.splitter;
+package queryless.core.source.preprocessor;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -26,21 +26,21 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import queryless.core.config.PluginConfiguration;
 import queryless.core.logging.Log;
-import queryless.core.source.model.Query;
-import queryless.core.source.model.Resource;
-import queryless.core.source.model.ResourceType;
 
 import java.io.File;
-import java.util.List;
+import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
-import static queryless.core.source.splitter.queries.SplitterQueries.EMPLOYEE_FIND;
-import static queryless.core.source.splitter.queries.SplitterQueries.EMPLOYEE_INSERT;
-import static queryless.core.source.splitter.queries.SplitterQueries.GET_ALL_EMPLOYEES;
 
 @RunWith(MockitoJUnitRunner.class)
-public class SqlSourceSplitterTest {
+public class SubstitutingPreprocessorTest {
+
+    private static final String QUERY = "${test.variable}${test.variable1}${test.variable2}${test.variable3}";
 
     @Mock
     private Log log;
@@ -48,23 +48,27 @@ public class SqlSourceSplitterTest {
     @Mock
     private PluginConfiguration configuration;
 
-    private SqlSourceSplitter splitter;
+    private SubstitutingPreprocessor preprocessor;
 
     @Before
-    public void setUp() {
-        when(configuration.getQueryKeyMarker()).thenReturn("id:");
-        when(configuration.getQueryCommentPrefix()).thenReturn("--");
+    public void setUp() throws Exception {
+        final Map<String, String> variables = new HashMap<>();
+        variables.put("test.variable", "test");
 
-        splitter = new SqlSourceSplitter(configuration, log);
+        final File variablesSource = new File(getClass().getResource("/variables/test.variables.properties").toURI());
+        final Set<Path> variableSources = new HashSet<>();
+        variableSources.add(variablesSource.toPath());
+
+        when(configuration.getVariables()).thenReturn(variables);
+        when(configuration.getVariableSources()).thenReturn(variableSources);
+
+        preprocessor = new SubstitutingPreprocessor(configuration, log);
     }
 
     @Test
-    public void testSplit() throws Exception {
-        final File sqlFile = new File(getClass().getResource("/queries/test.query.file.sql").toURI());
+    public void preprocess() {
+        final String result = preprocessor.preprocess(QUERY);
 
-        final List<Query> queries = splitter.split(new Resource(sqlFile.toPath(), ResourceType.SQL));
-
-        assertThat(queries).containsExactly(EMPLOYEE_INSERT, EMPLOYEE_FIND, GET_ALL_EMPLOYEES);
+        assertThat(result).isEqualTo("testtest1test2test3");
     }
-
 }

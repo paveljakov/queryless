@@ -38,5 +38,6 @@ public class PluginConfiguration {
     private final String nestedBundleSeparator;
     private final Map<String, String> variables;
     private final Set<Path> variableSources;
+    private final boolean addGenerateTimestamp = true;
 
 }

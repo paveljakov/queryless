@@ -54,9 +54,13 @@ public class SourcesServiceImpl implements SourcesService {
     public List<Source> load(final Set<Path> sources) {
         return sources.stream()
                 .sorted()
-                .map(this::buildResource)
+                .map(this::toResource)
                 .map(this::build)
                 .collect(Collectors.toList());
+    }
+
+    private Resource toResource(final Path path) {
+        return new Resource(path, resolveType(path));
     }
 
     private Source build(final Resource resource) {
@@ -75,10 +79,6 @@ public class SourcesServiceImpl implements SourcesService {
 
     private ResourceType resolveType(final Path path) {
         return ResourceType.resolve(FilenameUtils.getExtension(path.getFileName().toString()));
-    }
-
-    private Resource buildResource(final Path path) {
-        return new Resource(path, resolveType(path));
     }
 
     private Source buildSource(final Resource resource, final List<Query> queries) {

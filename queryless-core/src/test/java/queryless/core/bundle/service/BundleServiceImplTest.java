@@ -23,6 +23,9 @@ import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.util.Lists;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import queryless.core.bundle.model.Bundle;
 import queryless.core.config.PluginConfiguration;
 import queryless.core.source.model.Query;
@@ -35,13 +38,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public class BundleServiceImplTest {
+
+    @Mock
+    private PluginConfiguration configuration;
 
     private BundleServiceImpl bundleService;
 
     @Before
     public void setUp() throws Exception {
-        final PluginConfiguration configuration = mock(PluginConfiguration.class);
         when(configuration.getNestedBundleSeparator()).thenReturn(".");
 
         bundleService = new BundleServiceImpl(configuration);

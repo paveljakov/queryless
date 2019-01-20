@@ -1,4 +1,4 @@
--- id: employee.insert
+// key: insert
 INSERT INTO
     EMPLOYEE(
         ID,
@@ -13,19 +13,7 @@ VALUES(
     ?
 )
 
--- ID: employee.find
--- Finds employees by ID
-SELECT
-    ID,
-    NAME,
-    AGE,
-    DEPARTMENT
-FROM
-    EMPLOYEE
-WHERE
-    ID = :id
-
-  -- id:  get all employees
+  // Key:  get all employees
 SELECT
     ID,
     NAME,

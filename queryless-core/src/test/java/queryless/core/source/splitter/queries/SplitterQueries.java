@@ -21,9 +21,9 @@ package queryless.core.source.splitter.queries;
 
 import queryless.core.source.model.Query;
 
-public class SqlSplitterQueries {
+public class SplitterQueries {
 
-    public static final Query EMPLOYEE_INSERT = new Query("employee.insert", "INSERT INTO\n"
+    public static final Query EMPLOYEE_INSERT = new Query("insert", "INSERT INTO\n"
             + "    EMPLOYEE(\n"
             + "        ID,\n"
             + "        NAME,\n"
@@ -37,7 +37,7 @@ public class SqlSplitterQueries {
             + "    ?\n"
             + ")\n\n");
 
-    public static final Query EMPLOYEE_FIND = new Query("employee.find", "-- Finds employees by ID\n"
+    public static final Query EMPLOYEE_FIND = new Query("find", "-- Finds employees by ID\n"
             + "SELECT\n"
             + "    ID,\n"
             + "    NAME,\n"

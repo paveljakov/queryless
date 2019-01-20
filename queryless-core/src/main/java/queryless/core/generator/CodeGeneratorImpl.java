@@ -19,27 +19,25 @@
  */
 package queryless.core.generator;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
+import com.squareup.javapoet.AnnotationSpec;
+import com.squareup.javapoet.AnnotationSpec.Builder;
+import com.squareup.javapoet.FieldSpec;
+import com.squareup.javapoet.JavaFile;
+import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.TypeSpec;
+import org.apache.commons.text.WordUtils;
+import queryless.core.bundle.model.Bundle;
+import queryless.core.config.PluginConfiguration;
+import queryless.core.source.model.Query;
+import queryless.core.utils.NamingUtils;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Modifier;
-
-import org.apache.commons.text.WordUtils;
-
-import com.squareup.javapoet.AnnotationSpec;
-import com.squareup.javapoet.FieldSpec;
-import com.squareup.javapoet.JavaFile;
-import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.TypeSpec;
-
-import queryless.core.bundle.model.Bundle;
-import queryless.core.source.model.Query;
-import queryless.core.config.PluginConfiguration;
-import queryless.core.utils.NamingUtils;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Singleton
 public class CodeGeneratorImpl implements CodeGenerator {
@@ -73,14 +71,9 @@ public class CodeGeneratorImpl implements CodeGenerator {
 
         final String className = NamingUtils.toClassName(bundle.getName());
 
-        final AnnotationSpec generated = AnnotationSpec.builder(resolveGeneratedAnnotation())
-                .addMember("value", "$S", GENERATED_COMMENT)
-                .addMember("date", "$S", LocalDateTime.now())
-                .build();
-
         return TypeSpec.classBuilder(className)
                 .addJavadoc("<i>Queryless query bundle.</i><br/><h1>$L</h1>\n", WordUtils.capitalizeFully(bundle.getName()))
-                .addAnnotation(generated)
+                .addAnnotation(buildGeneratedAnnotation())
                 .addModifiers(modifiers)
                 .addFields(constants)
                 .addTypes(nestedClasses)
@@ -94,6 +87,17 @@ public class CodeGeneratorImpl implements CodeGenerator {
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
                 .initializer("$S", query.getText())
                 .build();
+    }
+
+    private AnnotationSpec buildGeneratedAnnotation() {
+        final Builder generated = AnnotationSpec.builder(resolveGeneratedAnnotation())
+                .addMember("value", "$S", GENERATED_COMMENT);
+
+        if (configuration.isAddGenerateTimestamp()) {
+            generated.addMember("date", "$S", LocalDateTime.now());
+        }
+
+        return generated.build();
     }
 
     private Class<?> resolveGeneratedAnnotation() {
