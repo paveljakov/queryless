@@ -74,8 +74,12 @@ public class GradlePlugin implements Plugin<Project> {
     }
 
     private void configure(final Project project) {
-        final QuerylessTask queryless = (QuerylessTask) project.getTasks().getByName(QUERYLESS_TASK_NAME);
         final QuerylessExtension extension = project.getExtensions().getByType(QuerylessExtension.class);
+        if (!extension.isEnabled()) {
+            return;
+        }
+
+        final QuerylessTask queryless = (QuerylessTask) project.getTasks().getByName(QUERYLESS_TASK_NAME);
 
         queryless.setSources(extension.getSources());
         queryless.setQueryKeyMarker(extension.getQueryKeyMarker());

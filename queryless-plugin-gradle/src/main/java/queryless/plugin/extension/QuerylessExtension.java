@@ -36,6 +36,8 @@ public class QuerylessExtension {
     private final static String DEFAULT_SOURCE_SET = "main";
     private final static String DEFAULT_GENERATE_PATH = "generated/queryless";
 
+    private Boolean enabled;
+
     private String sourceSetName;
 
     private String packageName;
@@ -54,6 +56,10 @@ public class QuerylessExtension {
 
     public QuerylessExtension(final Project project) {
         this.project = project;
+    }
+
+    public Boolean isEnabled() {
+        return enabled == null ? true : enabled;
     }
 
     public String getSourceSetName() {
@@ -92,6 +98,10 @@ public class QuerylessExtension {
 
     public FileCollection getSources() {
         return sources;
+    }
+
+    public void setEnabled(final Boolean enabled) {
+        this.enabled = enabled;
     }
 
     public void setSourceSetName(final String sourceSetName) {

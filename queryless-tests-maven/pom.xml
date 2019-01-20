@@ -42,6 +42,7 @@
                         </goals>
                         <phase>generate-sources</phase>
                         <configuration>
+                            <enabled>true</enabled>
                             <resourcesPath>src/main/resources</resourcesPath>
                             <sources>
                                 <param>queries/*.{xml,sql}</param>

@@ -35,6 +35,7 @@ import queryless.plugin.logging.MavenLog;
 import queryless.plugin.source.PathResolver;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.Set;
@@ -81,6 +82,10 @@ public class MavenPlugin extends AbstractMojo {
     @Parameter(property = "queryless.variableSources")
     private Set<String> variableSources;
 
+    @Parameter(property = "queryless.enabled",
+            defaultValue = "true")
+    private boolean enabled;
+
     @Parameter(defaultValue = "${project.basedir}")
     private File root;
 
@@ -88,6 +93,11 @@ public class MavenPlugin extends AbstractMojo {
     private MavenProject project;
 
     public void execute() throws MojoExecutionException {
+        if(!enabled) {
+            getLog().info("Queryless plugin disabled!");
+            return;
+        }
+
         try {
             project.addCompileSourceRoot(generatePath.toString());
 
@@ -95,20 +105,24 @@ public class MavenPlugin extends AbstractMojo {
                 return;
             }
 
-            final QuerylessPlugin plugin = DaggerQuerylessPlugin
-                    .builder()
-                    .logger(buildLog())
-                    .configuration(buildConfig())
-                    .build();
-
-            final Set<Path> sourcePaths = PathResolver.resolve(sources, getResourcesPath());
-
-            plugin.executor().execute(sourcePaths);
+            executeInternal();
 
         } catch (Exception e) {
             getLog().error(e);
             throw new MojoExecutionException(e.getMessage(), e);
         }
+    }
+
+    private void executeInternal() throws IOException {
+        final QuerylessPlugin plugin = DaggerQuerylessPlugin
+                .builder()
+                .logger(buildLog())
+                .configuration(buildConfig())
+                .build();
+
+        final Set<Path> sourcePaths = PathResolver.resolve(sources, getResourcesPath());
+
+        plugin.executor().execute(sourcePaths);
     }
 
     private Log buildLog() {

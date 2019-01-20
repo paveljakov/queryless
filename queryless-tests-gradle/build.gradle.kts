@@ -38,4 +38,5 @@ configure<QuerylessExtension> {
     sources = fileTree("src/main/resources").matching {
         include("**/*.*")
     }
+    isEnabled = true
 }
