@@ -24,7 +24,7 @@ import lombok.Getter;
 import java.util.EnumSet;
 
 @Getter
-public enum SourceType {
+public enum ResourceType {
     SQL("sql"),
     XML("xml"),
     PROPERTIES("properties"),
@@ -32,11 +32,11 @@ public enum SourceType {
 
     private final String extension;
 
-    SourceType(final String extension) {
+    ResourceType(final String extension) {
         this.extension = extension;
     }
 
-    public static SourceType resolve(final String extension) {
+    public static ResourceType resolve(final String extension) {
         return EnumSet.complementOf(EnumSet.of(OTHER))
                 .stream()
                 .filter(type -> type.getExtension().equalsIgnoreCase(extension))

@@ -34,7 +34,7 @@ import queryless.core.config.PluginConfiguration;
 import queryless.core.file.CodeFileService;
 import queryless.core.generator.CodeGenerator;
 import queryless.core.logging.Log;
-import queryless.core.source.loader.SourcesLoader;
+import queryless.core.source.service.SourcesService;
 import queryless.core.source.model.Source;
 
 public class PluginExecutor {
@@ -42,20 +42,20 @@ public class PluginExecutor {
     private final Log log;
     private final PluginConfiguration configuration;
 
-    private final SourcesLoader sourcesLoader;
+    private final SourcesService sourcesService;
     private final BundleService bundleService;
     private final CodeGenerator codeGenerator;
 
     private final CodeFileService<JavaFile> codeFileService;
 
     @Inject
-    public PluginExecutor(final Log log, final PluginConfiguration configuration, final SourcesLoader sourcesLoader,
+    public PluginExecutor(final Log log, final PluginConfiguration configuration, final SourcesService sourcesService,
                           final BundleService bundleService, final CodeGenerator codeGenerator,
                           final CodeFileService<JavaFile> codeFileService) {
 
         this.log = log;
         this.configuration = configuration;
-        this.sourcesLoader = sourcesLoader;
+        this.sourcesService = sourcesService;
         this.bundleService = bundleService;
         this.codeGenerator = codeGenerator;
         this.codeFileService = codeFileService;
@@ -66,7 +66,7 @@ public class PluginExecutor {
 
         log.info("Generating query constants.");
 
-        sourcesLoader.load(sources).stream()
+        sourcesService.load(sources).stream()
                 .collect(Collectors.groupingBy(Source::getBundleName))
                 .entrySet().stream()
                 .map(e -> bundleService.build(e.getKey(), e.getValue()))

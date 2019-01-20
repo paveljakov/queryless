@@ -21,11 +21,9 @@ package queryless.core.bundle.service;
 
 import org.apache.commons.lang3.StringUtils;
 import queryless.core.bundle.model.Bundle;
-import queryless.core.bundle.model.Query;
 import queryless.core.config.PluginConfiguration;
+import queryless.core.source.model.Query;
 import queryless.core.source.model.Source;
-import queryless.core.source.preprocessor.Preprocessors;
-import queryless.core.source.splitter.SourceSplitters;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -40,16 +38,10 @@ import java.util.stream.Collectors;
 @Singleton
 public class BundleServiceImpl implements BundleService {
 
-    private final SourceSplitters sourceSplitters;
-    private final Preprocessors preprocessor;
     private final PluginConfiguration configuration;
 
     @Inject
-    public BundleServiceImpl(final SourceSplitters sourceSplitters, final Preprocessors preprocessor,
-                             final PluginConfiguration configuration) {
-
-        this.sourceSplitters = sourceSplitters;
-        this.preprocessor = preprocessor;
+    public BundleServiceImpl(final PluginConfiguration configuration) {
         this.configuration = configuration;
     }
 
@@ -58,8 +50,8 @@ public class BundleServiceImpl implements BundleService {
         Objects.requireNonNull(sources);
 
         final List<Query> queries = sources.stream()
-                .flatMap(s -> sourceSplitters.get(s.getType()).split(s).stream())
-                .map(q -> preprocessor.preprocess(q))
+                .flatMap(s -> s.getQueries().stream())
+                .sorted()
                 .collect(Collectors.toList());
 
         return buildBundle(bundleName, queries);

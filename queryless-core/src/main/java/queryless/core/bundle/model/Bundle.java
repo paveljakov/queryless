@@ -22,6 +22,7 @@ package queryless.core.bundle.model;
 import java.util.List;
 
 import lombok.Data;
+import queryless.core.source.model.Query;
 
 @Data
 public class Bundle {

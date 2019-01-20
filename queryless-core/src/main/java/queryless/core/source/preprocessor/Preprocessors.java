@@ -19,7 +19,7 @@
  */
 package queryless.core.source.preprocessor;
 
-import queryless.core.bundle.model.Query;
+import queryless.core.source.model.Query;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

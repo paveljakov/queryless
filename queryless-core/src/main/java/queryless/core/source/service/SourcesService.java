@@ -17,7 +17,7 @@
  * limitations under the License.
  * ===============================LICENSE_END==============================
  */
-package queryless.core.source.loader;
+package queryless.core.source.service;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -25,7 +25,7 @@ import java.util.Set;
 
 import queryless.core.source.model.Source;
 
-public interface SourcesLoader {
+public interface SourcesService {
 
     List<Source> load(Set<Path> sources);
 

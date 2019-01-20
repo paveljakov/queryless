@@ -29,8 +29,8 @@ import queryless.core.file.CodeFileService;
 import queryless.core.file.JavaFileService;
 import queryless.core.generator.CodeGenerator;
 import queryless.core.generator.CodeGeneratorImpl;
-import queryless.core.source.loader.SourcesLoader;
-import queryless.core.source.loader.SourcesLoaderImpl;
+import queryless.core.source.service.SourcesService;
+import queryless.core.source.service.SourcesServiceImpl;
 import queryless.core.source.preprocessor.Preprocessor;
 import queryless.core.source.preprocessor.SubstitutingPreprocessor;
 import queryless.core.source.preprocessor.UnindentingPreprocessor;
@@ -71,7 +71,7 @@ abstract class QuerylessModule {
     abstract BundleService provideBundleService(BundleServiceImpl bundleService);
 
     @Binds
-    abstract SourcesLoader provideSourcesLoader(SourcesLoaderImpl sourcesLoader);
+    abstract SourcesService provideSourcesService(SourcesServiceImpl sourcesService);
 
     @Binds
     abstract CodeGenerator provideCodeGenerator(CodeGeneratorImpl codeGenerator);

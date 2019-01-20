@@ -25,7 +25,7 @@ import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import queryless.core.source.model.SourceType;
+import queryless.core.source.model.ResourceType;
 
 @Singleton
 public class SourceSplitters {
@@ -37,7 +37,7 @@ public class SourceSplitters {
         this.splitters = splitters;
     }
 
-    public SourceSplitter get(final SourceType type) {
+    public SourceSplitter get(final ResourceType type) {
         return splitters.stream()
                 .filter(s -> Objects.equals(s.supports(), type))
                 .findAny()

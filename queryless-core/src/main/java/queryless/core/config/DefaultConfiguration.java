@@ -29,5 +29,6 @@ public final class DefaultConfiguration {
     public final static String DEFAULT_QUERY_KEY_MARKER = "id:";
     public final static String DEFAULT_QUERY_COMMENT_PREFIX = "--";
     public final static String DEFAULT_NESTED_BUNDLE_SEPARATOR = ".";
+    public final static String DEFAULT_FILENAME_BUNDLE_SEPARATOR = ".";
 
 }

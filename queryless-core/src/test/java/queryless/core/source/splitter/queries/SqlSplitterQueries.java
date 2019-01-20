@@ -19,7 +19,7 @@
  */
 package queryless.core.source.splitter.queries;
 
-import queryless.core.bundle.model.Query;
+import queryless.core.source.model.Query;
 
 public class SqlSplitterQueries {
 

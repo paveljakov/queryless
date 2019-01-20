@@ -20,11 +20,11 @@
 package queryless.core.source.splitter;
 
 import org.apache.commons.io.LineIterator;
-import queryless.core.bundle.model.Query;
 import queryless.core.config.PluginConfiguration;
 import queryless.core.logging.Log;
-import queryless.core.source.model.Source;
-import queryless.core.source.model.SourceType;
+import queryless.core.source.model.Query;
+import queryless.core.source.model.Resource;
+import queryless.core.source.model.ResourceType;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -51,13 +51,13 @@ public class GenericSourceSplitter implements SourceSplitter {
     }
 
     @Override
-    public List<Query> split(final Source source) {
+    public List<Query> split(final Resource resource) {
         final List<Query> queries = new ArrayList<>();
 
         StringBuilder queryText = new StringBuilder();
         String queryId = null;
 
-        try (LineIterator it = source.getLineIterator()) {
+        try (LineIterator it = resource.getLineIterator()) {
             while (it.hasNext()) {
                 String line = it.nextLine();
                 final Matcher matcher = keyMarkerRegex.matcher(line);
@@ -73,7 +73,7 @@ public class GenericSourceSplitter implements SourceSplitter {
                 }
             }
         } catch (IOException e) {
-            log.warn("Error occurred while reading source file " + source.getPath() + ": " + e.getMessage());
+            log.warn("Error occurred while reading source file " + resource.getPath() + ": " + e.getMessage());
             return queries;
         }
 
@@ -89,8 +89,8 @@ public class GenericSourceSplitter implements SourceSplitter {
     }
 
     @Override
-    public SourceType supports() {
-        return SourceType.OTHER;
+    public ResourceType supports() {
+        return ResourceType.OTHER;
     }
 
 }

@@ -21,7 +21,7 @@ package queryless.core.source.splitter;
 
 import queryless.core.config.PluginConfiguration;
 import queryless.core.logging.Log;
-import queryless.core.source.model.SourceType;
+import queryless.core.source.model.ResourceType;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -35,8 +35,8 @@ public class SqlSourceSplitter extends GenericSourceSplitter {
     }
 
     @Override
-    public SourceType supports() {
-        return SourceType.SQL;
+    public ResourceType supports() {
+        return ResourceType.SQL;
     }
 
 }

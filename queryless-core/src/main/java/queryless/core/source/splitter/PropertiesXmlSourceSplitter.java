@@ -19,10 +19,10 @@
  */
 package queryless.core.source.splitter;
 
-import queryless.core.bundle.model.Query;
 import queryless.core.logging.Log;
-import queryless.core.source.model.Source;
-import queryless.core.source.model.SourceType;
+import queryless.core.source.model.Query;
+import queryless.core.source.model.Resource;
+import queryless.core.source.model.ResourceType;
 import queryless.core.utils.PropertiesUtils;
 
 import javax.inject.Inject;
@@ -46,24 +46,24 @@ public class PropertiesXmlSourceSplitter implements SourceSplitter {
     }
 
     @Override
-    public List<Query> split(final Source source) {
-        return loadProperties(source).entrySet()
+    public List<Query> split(final Resource resource) {
+        return loadProperties(resource).entrySet()
                 .stream()
                 .map(this::buildQuery)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public SourceType supports() {
-        return SourceType.XML;
+    public ResourceType supports() {
+        return ResourceType.XML;
     }
 
-    private Map<String, String> loadProperties(final Source source) {
-        try (final InputStream stream = source.getContentStream()) {
+    private Map<String, String> loadProperties(final Resource resource) {
+        try (final InputStream stream = resource.getContentStream()) {
             return PropertiesUtils.loadXmlProperties(stream);
 
         } catch (IOException e) {
-            log.warn("Error occurred while reading source file " + source.getPath() + ": " + e.getMessage());
+            log.warn("Error occurred while reading source file " + resource.getPath() + ": " + e.getMessage());
             return new HashMap<>();
         }
     }

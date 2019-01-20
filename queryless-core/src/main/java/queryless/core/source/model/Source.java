@@ -20,42 +20,21 @@
 package queryless.core.source.model;
 
 import lombok.Data;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.LineIterator;
-import org.apache.commons.lang3.StringUtils;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
+import java.util.List;
 import java.util.Objects;
 
 @Data
 public class Source implements Comparable<Source> {
 
-    private final Path path;
-    private final SourceType type;
+    private final String name;
+    private final String bundleName;
 
-    public InputStream getContentStream() throws IOException {
-        return FileUtils.openInputStream(path.toFile());
-    }
-
-    public LineIterator getLineIterator() throws IOException {
-        return FileUtils.lineIterator(path.toFile(), StandardCharsets.UTF_8.name());
-    }
-
-    public String getName() {
-        return FilenameUtils.removeExtension(path.getFileName().toString());
-    }
-
-    public String getBundleName() {
-        return StringUtils.substringBefore(getName(), ".");
-    }
+    private final List<Query> queries;
 
     @Override
     public int compareTo(final Source o) {
-        return Objects.compare(getPath(), o.getPath(), Path::compareTo);
+        return Objects.compare(getName(), o.getName(), String::compareToIgnoreCase);
     }
 
 }

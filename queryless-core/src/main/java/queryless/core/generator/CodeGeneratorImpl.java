@@ -37,7 +37,7 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 
 import queryless.core.bundle.model.Bundle;
-import queryless.core.bundle.model.Query;
+import queryless.core.source.model.Query;
 import queryless.core.config.PluginConfiguration;
 import queryless.core.utils.NamingUtils;
 

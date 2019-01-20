@@ -21,14 +21,14 @@ package queryless.core.source.splitter;
 
 import java.util.List;
 
-import queryless.core.bundle.model.Query;
-import queryless.core.source.model.Source;
-import queryless.core.source.model.SourceType;
+import queryless.core.source.model.Query;
+import queryless.core.source.model.Resource;
+import queryless.core.source.model.ResourceType;
 
 public interface SourceSplitter {
 
-    List<Query> split(Source source);
+    List<Query> split(Resource resource);
 
-    SourceType supports();
+    ResourceType supports();
 
 }

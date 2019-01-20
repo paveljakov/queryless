@@ -24,19 +24,14 @@ import org.assertj.core.util.Lists;
 import org.junit.Before;
 import org.junit.Test;
 import queryless.core.bundle.model.Bundle;
-import queryless.core.bundle.model.Query;
 import queryless.core.config.PluginConfiguration;
+import queryless.core.source.model.Query;
 import queryless.core.source.model.Source;
-import queryless.core.source.preprocessor.Preprocessors;
-import queryless.core.source.splitter.SourceSplitter;
-import queryless.core.source.splitter.SourceSplitters;
 
 import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.AdditionalAnswers.returnsFirstArg;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -44,22 +39,12 @@ public class BundleServiceImplTest {
 
     private BundleServiceImpl bundleService;
 
-    private SourceSplitter splitter;
-
     @Before
     public void setUp() throws Exception {
-        splitter = mock(SourceSplitter.class);
-
-        final SourceSplitters sourceSplitters = mock(SourceSplitters.class);
-        when(sourceSplitters.get(any())).thenReturn(splitter);
-
         final PluginConfiguration configuration = mock(PluginConfiguration.class);
         when(configuration.getNestedBundleSeparator()).thenReturn(".");
 
-        final Preprocessors preprocessors = mock(Preprocessors.class);
-        when(preprocessors.preprocess(any())).thenAnswer(returnsFirstArg());
-
-        bundleService = new BundleServiceImpl(sourceSplitters, preprocessors, configuration);
+        bundleService = new BundleServiceImpl(configuration);
     }
 
     @Test
@@ -70,7 +55,7 @@ public class BundleServiceImplTest {
                 new Query("query2", ""),
                 new Query("query3", ""));
 
-        when(splitter.split(source)).thenReturn(queries);
+        when(source.getQueries()).thenReturn(queries);
 
         final Bundle bundle = bundleService.build("test", Collections.singletonList(source));
 
@@ -86,7 +71,7 @@ public class BundleServiceImplTest {
                 new Query("nested.query2", ""),
                 new Query("nested.query3", ""));
 
-        when(splitter.split(source)).thenReturn(queries);
+        when(source.getQueries()).thenReturn(queries);
 
         final Bundle bundle = bundleService.build("test", Collections.singletonList(source));
 
@@ -112,7 +97,7 @@ public class BundleServiceImplTest {
                 new Query("nested2.query6", ""),
                 new Query("nested2.nested1.query7", ""));
 
-        when(splitter.split(source)).thenReturn(queries);
+        when(source.getQueries()).thenReturn(queries);
 
         final Bundle bundle = bundleService.build("test", Collections.singletonList(source));
 
