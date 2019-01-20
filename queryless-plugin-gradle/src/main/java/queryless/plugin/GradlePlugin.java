@@ -84,7 +84,7 @@ public class GradlePlugin implements Plugin<Project> {
         queryless.setPackageName(extension.getPackageName());
         queryless.setGeneratePath(extension.getGeneratePath());
         queryless.setVariables(extension.getVariables());
-        queryless.setVariablePaths(extension.getVariablePaths());
+        queryless.setVariableSources(extension.getVariableSources());
 
         project.getPlugins().withType(JavaPlugin.class, javaPlugin -> configureJavaPlugin(project, queryless, extension));
     }

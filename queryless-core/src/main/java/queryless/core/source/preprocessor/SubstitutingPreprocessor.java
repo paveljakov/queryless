@@ -48,8 +48,8 @@ public class SubstitutingPreprocessor implements Preprocessor {
             variables.putAll(configuration.getVariables());
         }
 
-        if (configuration.getVariablePaths() != null) {
-            configuration.getVariablePaths().stream()
+        if (configuration.getVariableSources() != null) {
+            configuration.getVariableSources().stream()
                     .map(this::loadProperties)
                     .forEach(variables::putAll);
         }

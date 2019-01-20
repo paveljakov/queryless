@@ -62,7 +62,7 @@ public class QuerylessTask extends DefaultTask {
     private Map<String, String> variables;
 
     @InputFiles
-    private FileCollection variablePaths;
+    private FileCollection variableSources;
 
     @InputFiles
     private FileCollection sources;
@@ -92,7 +92,7 @@ public class QuerylessTask extends DefaultTask {
                 getQueryKeyMarker(),
                 getNestedBundleSeparator(),
                 getVariables(),
-                resolvePaths(getVariablePaths()));
+                resolvePaths(getVariableSources()));
     }
 
     private Log buildLog() {
@@ -158,12 +158,12 @@ public class QuerylessTask extends DefaultTask {
         this.variables = variables;
     }
 
-    public FileCollection getVariablePaths() {
-        return variablePaths;
+    public FileCollection getVariableSources() {
+        return variableSources;
     }
 
-    public void setVariablePaths(final FileCollection variablePaths) {
-        this.variablePaths = variablePaths;
+    public void setVariableSources(final FileCollection variableSources) {
+        this.variableSources = variableSources;
     }
 
     public FileCollection getSources() {

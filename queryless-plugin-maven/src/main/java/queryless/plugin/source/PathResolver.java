@@ -27,16 +27,15 @@ import java.nio.file.Path;
 import java.nio.file.PathMatcher;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public final class SourcesResolver {
+public final class PathResolver {
 
-    public static Set<Path> resolve(final String[] sources, final Path resourcesPath) {
-        return Arrays.stream(sources)
+    public static Set<Path> resolve(final Set<String> sources, final Path resourcesPath) {
+        return sources.stream()
                 .map(source -> resolveFiles(resourcesPath, source))
                 .flatMap(Collection::stream)
                 .collect(Collectors.toSet());
@@ -71,6 +70,6 @@ public final class SourcesResolver {
         return files;
     }
 
-    private SourcesResolver() {
+    private PathResolver() {
     }
 }

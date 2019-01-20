@@ -19,7 +19,6 @@
  */
 package queryless.plugin;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -33,13 +32,12 @@ import queryless.core.config.DefaultConfiguration;
 import queryless.core.config.PluginConfiguration;
 import queryless.core.logging.Log;
 import queryless.plugin.logging.MavenLog;
-import queryless.plugin.source.SourcesResolver;
+import queryless.plugin.source.PathResolver;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Mojo(name = "generate",
         defaultPhase = LifecyclePhase.GENERATE_SOURCES,
@@ -50,7 +48,7 @@ public class MavenPlugin extends AbstractMojo {
 
     @Parameter(property = "queryless.sources",
             required = true)
-    private String[] sources;
+    private Set<String> sources;
 
     @Parameter(property = "queryless.package",
             defaultValue = DefaultConfiguration.DEFAULT_PACKAGE_NAME)
@@ -80,8 +78,8 @@ public class MavenPlugin extends AbstractMojo {
     @Parameter(property = "queryless.variables")
     private Map<String, String> variables;
 
-    @Parameter(property = "queryless.variablePaths")
-    private Set<File> variablePaths;
+    @Parameter(property = "queryless.variableSources")
+    private Set<String> variableSources;
 
     @Parameter(defaultValue = "${project.basedir}")
     private File root;
@@ -93,7 +91,7 @@ public class MavenPlugin extends AbstractMojo {
         try {
             project.addCompileSourceRoot(generatePath.toString());
 
-            if (ArrayUtils.isEmpty(sources)) {
+            if (sources == null || sources.isEmpty()) {
                 return;
             }
 
@@ -103,7 +101,7 @@ public class MavenPlugin extends AbstractMojo {
                     .configuration(buildConfig())
                     .build();
 
-            final Set<Path> sourcePaths = SourcesResolver.resolve(sources, getResourcesPath());
+            final Set<Path> sourcePaths = PathResolver.resolve(sources, getResourcesPath());
 
             plugin.executor().execute(sourcePaths);
 
@@ -125,9 +123,7 @@ public class MavenPlugin extends AbstractMojo {
                 queryKeyMarker,
                 nestedBundleSeparator,
                 variables,
-                variablePaths.stream()
-                        .map(File::toPath)
-                        .collect(Collectors.toSet()));
+                PathResolver.resolve(variableSources, getResourcesPath()));
     }
 
     private Path getResourcesPath() {

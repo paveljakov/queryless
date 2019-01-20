@@ -46,7 +46,7 @@ public class QuerylessExtension {
     private String nestedBundleSeparator;
 
     private Map<String, String> variables;
-    private FileCollection variablePaths;
+    private FileCollection variableSources;
 
     private FileCollection sources;
 
@@ -86,8 +86,8 @@ public class QuerylessExtension {
         return variables == null ? new HashMap<>() : variables;
     }
 
-    public FileCollection getVariablePaths() {
-        return variablePaths == null ? project.files() : variablePaths;
+    public FileCollection getVariableSources() {
+        return variableSources == null ? project.files() : variableSources;
     }
 
     public FileCollection getSources() {
@@ -126,7 +126,7 @@ public class QuerylessExtension {
         this.sources = sources;
     }
 
-    public void setVariablePaths(final FileCollection variablePaths) {
-        this.variablePaths = variablePaths;
+    public void setVariableSources(final FileCollection variableSources) {
+        this.variableSources = variableSources;
     }
 }

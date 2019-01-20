@@ -37,6 +37,6 @@ public class PluginConfiguration {
     private final String queryKeyMarker;
     private final String nestedBundleSeparator;
     private final Map<String, String> variables;
-    private final Set<Path> variablePaths;
+    private final Set<Path> variableSources;
 
 }
