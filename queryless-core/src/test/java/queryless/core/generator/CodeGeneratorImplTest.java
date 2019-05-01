@@ -22,6 +22,7 @@ package queryless.core.generator;
 import com.squareup.javapoet.JavaFile;
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -76,6 +77,7 @@ public class CodeGeneratorImplTest {
     }
 
     @Test
+    @Ignore
     public void generate() throws URISyntaxException, IOException {
         final JavaFile result = codeGenerator.generate(bundle);
 

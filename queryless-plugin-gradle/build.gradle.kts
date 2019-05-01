@@ -7,7 +7,7 @@ plugins {
     id("com.github.hierynomus.license") version("0.15.0")
 }
 
-group = "queryless"
+group = "com.github.paveljakov"
 version = "1.0.0-SNAPSHOT"
 
 repositories {
@@ -16,7 +16,7 @@ repositories {
 }
 
 dependencies {
-    compile("queryless", "queryless-core", "1.0.0-SNAPSHOT")
+    compile("com.github.paveljakov", "queryless-core", "1.0.0-SNAPSHOT")
     testCompile("junit", "junit", "4.12")
 }
 
@@ -27,7 +27,7 @@ configure<JavaPluginConvention> {
 gradlePlugin {
     plugins {
         create("QuerylessPlugin") {
-            id = "queryless.plugin"
+            id = "com.github.paveljakov.plugin"
             implementationClass = "queryless.plugin.GradlePlugin"
         }
     }

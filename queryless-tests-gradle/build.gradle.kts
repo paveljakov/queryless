@@ -6,10 +6,10 @@ plugins {
     idea
     eclipse
     id("com.github.hierynomus.license") version("0.15.0")
-    id("queryless.plugin") version("1.0.0-SNAPSHOT")
+    id("com.github.paveljakov.plugin") version("1.0.0-SNAPSHOT")
 }
 
-group = "queryless"
+group = "com.github.paveljakov"
 version = "1.0.0-SNAPSHOT"
 
 repositories {
