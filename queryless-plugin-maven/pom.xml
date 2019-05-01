@@ -14,6 +14,32 @@
     <artifactId>queryless-plugin-maven</artifactId>
     <packaging>maven-plugin</packaging>
 
+    <name>Queryless Maven Plugin</name>
+    <description>Plugin generates java constants classes from externalized query files.</description>
+    <url>https://github.com/paveljakov/queryless</url>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Pavel Jakovlev</name>
+            <email>paveljakov@gmail.com</email>
+            <organization>paveljakov</organization>
+            <organizationUrl>https://github.com/paveljakov</organizationUrl>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git://github.com/paveljakov/queryless.git</connection>
+        <developerConnection>scm:git:ssh://github.com/paveljakov/queryless.git</developerConnection>
+        <url>https://github.com/paveljakov/queryless</url>
+    </scm>
+
     <dependencies>
         <dependency>
             <groupId>org.apache.maven</groupId>

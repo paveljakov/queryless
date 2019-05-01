@@ -72,7 +72,7 @@ public class CodeGeneratorImpl implements CodeGenerator {
         final String className = NamingUtils.toClassName(bundle.getName());
 
         return TypeSpec.classBuilder(className)
-                .addJavadoc("<i>Queryless query bundle.</i><br/><h1>$L</h1>\n", WordUtils.capitalizeFully(bundle.getName()))
+                .addJavadoc("<i>Queryless query bundle.</i><br><h1>$L</h1>\n", WordUtils.capitalizeFully(bundle.getName()))
                 .addAnnotation(buildGeneratedAnnotation())
                 .addModifiers(modifiers)
                 .addFields(constants)
