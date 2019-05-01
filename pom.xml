@@ -5,7 +5,7 @@
 
     <groupId>com.github.paveljakov</groupId>
     <artifactId>queryless-parent</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
 
     <packaging>pom</packaging>
 
@@ -45,7 +45,6 @@
     <modules>
         <module>queryless-core</module>
         <module>queryless-plugin-maven</module>
-        <module>queryless-tests-maven</module>
     </modules>
 
     <properties>
