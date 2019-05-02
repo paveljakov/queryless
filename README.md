@@ -46,7 +46,7 @@ WHERE
 Using simple Maven plugin configuration:
 ```xml
 <plugin>
-    <groupId>queryless</groupId>
+    <groupId>com.github.paveljakov</groupId>
     <artifactId>queryless-plugin-maven</artifactId>
     <version>${queryless.version}</version>
     <executions>
@@ -67,7 +67,7 @@ Using simple Maven plugin configuration:
 Or simple Gradle plugin configuration (kotlin):
 ```kotlin
 plugins {
-    id("queryless.plugin") version("${queryless.version}")
+    id("com.github.paveljakov.plugin") version("${queryless.version}")
 }
 
 queryless {
@@ -134,7 +134,7 @@ To use Queryless Maven/Gradle plugin you just need to add plugin declaration to 
 ### Maven plugin
 ```xml
 <plugin>
-    <groupId>queryless</groupId>
+    <groupId>com.github.paveljakov</groupId>
     <artifactId>queryless-plugin-maven</artifactId>
     <version>${queryless.version}</version>
     <executions>
@@ -155,13 +155,13 @@ _Not yet published in cntral repo._
 Kotlin:
 ```kotlin
 plugins {
-    id("queryless.plugin") version("${queryless.version}")
+    id("com.github.paveljakov.plugin") version("${queryless.version}")
 }
 ```
 Groovy:
 ```groovy
 plugins {
-    id 'queryless.plugin' version '${queryless.version}'
+    id 'com.github.paveljakov.plugin' version '${queryless.version}'
 }
 ```
 
