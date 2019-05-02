@@ -149,6 +149,9 @@ To use Queryless Maven/Gradle plugin you just need to add plugin declaration to 
 ```
 
 ### Gradle plugin
+
+_Not yet published in cntral repo._
+
 Kotlin:
 ```kotlin
 plugins {
