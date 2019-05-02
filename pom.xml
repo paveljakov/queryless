@@ -10,7 +10,7 @@
     <packaging>pom</packaging>
 
     <name>Queryless Plugin</name>
-    <description>Plugin generates java constants classes from externalized query files.</description>
+    <description>Queryless is a Maven and Gradle plugin that generates Java classes from resource files containing externalized SQL or other type queries.</description>
     <url>https://github.com/paveljakov/queryless</url>
 
     <licenses>
